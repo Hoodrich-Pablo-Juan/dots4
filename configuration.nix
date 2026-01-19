@@ -1,5 +1,3 @@
-# configuration.nix for bryllm
-# NixOS 25.11 with Hyprland + NVIDIA 1650M + Intel iGPU
 { config, pkgs, ... }:
 
 {
@@ -24,7 +22,7 @@
     blacklistedKernelModules = [ "nouveau" ];
     
     # Load NVIDIA modules early
-    kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+    initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
   };
 
   # ============================================
@@ -82,27 +80,15 @@
     
     # PRIME configuration for hybrid graphics (Intel + NVIDIA)
     prime = {
-      # IMPORTANT: Get your actual bus IDs by running:
-      # lspci | grep -E "VGA|3D"
-      # Example output:
-      #   00:02.0 VGA compatible controller: Intel
-      #   01:00.0 3D controller: NVIDIA
-      # Then convert to format below (remove dots, add colons)
-      
-      # Replace these with YOUR actual values from lspci!
-      intelBusId = "PCI:0:2:0";    # Update this!
-      nvidiaBusId = "PCI:1:0:0";   # Update this!
+      # Get your actual bus IDs by running: lspci | grep -E "VGA|3D"
+      intelBusId = "PCI:0:2:0";
+      nvidiaBusId = "PCI:1:0:0";
       
       # OFFLOAD mode: Use NVIDIA only when needed (better battery)
-      # To run apps on NVIDIA: nvidia-offload <app-name>
       offload = {
         enable = true;
-        enableOffloadCmd = true; # Creates nvidia-offload command
+        enableOffloadCmd = true;
       };
-      
-      # Alternative: SYNC mode (always use both GPUs, better performance)
-      # Uncomment next line and comment out the offload section above
-      # sync.enable = true;
     };
   };
 
@@ -136,7 +122,6 @@
   # ============================================
   # DISPLAY & DESKTOP
   # ============================================
-  # Keep GNOME as fallback (optional - you can disable if you only want Hyprland)
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
@@ -170,7 +155,7 @@
     LIBVA_DRIVER_NAME = "nvidia";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    WLR_NO_HARDWARE_CURSORS = "1"; # Fix for cursor issues
+    WLR_NO_HARDWARE_CURSORS = "1";
     
     # Wayland
     XDG_CURRENT_DESKTOP = "Hyprland";
@@ -217,10 +202,6 @@
     shell = pkgs.bash;
   };
 
-  # Auto-login to TTY1 (optional - for Hyprland auto-start)
-  # Uncomment to enable:
-  # services.getty.autologinUser = "bryllm";
-
   # ============================================
   # SYSTEM PACKAGES
   # ============================================
@@ -234,13 +215,14 @@
     killall
     file
     unzip
-    pciutils  # For lspci
-    usbutils  # For lsusb
+    pciutils
+    usbutils
     
     # Hyprland ecosystem
     hyprland
     hyprpaper
     hyprpicker
+    hyprsunset  # Warm color temperature filter
     xdg-desktop-portal-hyprland
     
     # Wayland tools
@@ -292,9 +274,6 @@
     noto-fonts-color-emoji
     nerd-fonts.jetbrains-mono
     
-    # Browser
-    firefox
-    
     # Build tools (for hyprpm and hy3 plugin)
     cmake
     meson
@@ -305,9 +284,13 @@
     cpio
     
     # NVIDIA tools
-    nvtopPackages.full  # GPU monitoring
+    nvtopPackages.full
     mesa-demos
     vulkan-tools
+    
+    # Additional Wayland support
+    qt5.qtwayland
+    qt6.qtwayland
   ];
 
   # ============================================
