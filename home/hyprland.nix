@@ -5,17 +5,18 @@
     enable = true;
     settings = {
       monitor = "DP-1,3440x1440@120,0x0,1";
-      
+
       "$mod" = "SUPER";
-      "$terminal" = "alacritty";
+      "$terminal" = "kitty";
       "$fileManager" = "nautilus";
       "$browser" = "firefox";
       "$menu" = "wofi --show drun --prompt \"\" --location center --width 600";
 
       exec-once = [
         "waybar"
-        "swaybg -i ~/.config/wallpapers/eink.jpg -m fill"
-        "hyprsunset -t 3400"  # Warm color temperature filter (3400K)
+        "hyprctl setcursor Bibata-Modern-Classic 24"  # Set cursor theme
+        "swaybg -i ~/.config/wallpapers/wallpaper.jpg -m fill"
+        "hyprsunset -t 3400"
         "brightnessctl set 10%"
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
@@ -32,6 +33,7 @@
         "QT_QPA_PLATFORM,wayland"
         "XCURSOR_SIZE,24"
         "HYPRCURSOR_SIZE,24"
+        "XCURSOR_THEME,Bibata-Modern-Classic"
       ];
 
       xwayland = {
@@ -60,7 +62,7 @@
 
       general = {
         gaps_in = 8;
-        gaps_out = 28;  # Increased gap between waybar and windows
+        gaps_out = 28;
         border_size = 1;
         "col.active_border" = "rgba(333333cc)";
         "col.inactive_border" = "rgba(33333377)";
@@ -119,7 +121,7 @@
         "$mod, G, togglegroup"
         "Alt, Space, fullscreen"
         "$mod, J, togglesplit"
-        
+      
         # Focus (Colemak DH - NEIO = arrow keys)
         "$mod, N, movefocus, l"
         "$mod, E, movefocus, d"
@@ -130,7 +132,7 @@
         "$mod, Up, movefocus, u"
         "$mod, Down, movefocus, d"
         "Alt, Tab, cyclenext"
-        
+      
         # Move windows
         "$mod SHIFT, N, movewindow, l"
         "$mod SHIFT, E, movewindow, d"
@@ -140,7 +142,7 @@
         "$mod SHIFT, Right, movewindow, r"
         "$mod SHIFT, Up, movewindow, u"
         "$mod SHIFT, Down, movewindow, d"
-        
+      
         # Applications
         "$mod, T, exec, $terminal"
         "$mod, Return, exec, $terminal"
@@ -149,13 +151,13 @@
         "$mod, V, exec, pavucontrol"
         "$mod, A, exec, $menu"
         "Control Shift, Escape, exec, $terminal -e htop"
-        
+      
         # Screenshots & Recording
         "$mod SHIFT, P, exec, hyprpicker -a"
         "$mod, P, exec, grim -g \"$(slurp)\" - | wl-copy"
         ", Print, exec, grim - | wl-copy"
         "$mod Control, P, exec, ~/.config/hypr/scripts/wf-toggle-recorder.sh"
-        
+      
         # Workspaces
         "$mod, 1, workspace, 1"
         "$mod, 2, workspace, 2"
@@ -167,7 +169,7 @@
         "$mod, 8, workspace, 8"
         "$mod, 9, workspace, 9"
         "$mod, 0, workspace, 10"
-        
+      
         # Move to workspace
         "$mod SHIFT, 1, movetoworkspace, 1"
         "$mod SHIFT, 2, movetoworkspace, 2"
@@ -179,7 +181,7 @@
         "$mod SHIFT, 8, movetoworkspace, 8"
         "$mod SHIFT, 9, movetoworkspace, 9"
         "$mod SHIFT, 0, movetoworkspace, 10"
-        
+      
         # Scroll through workspaces
         "$mod, mouse_down, workspace, e+1"
         "$mod, mouse_up, workspace, e-1"
@@ -218,6 +220,7 @@
         "float, class:^(pavucontrol)$"
         "float, class:^(blueman-manager)$"
         "float, class:^(nm-connection-editor)$"
+        "float, class:^(impala)$"
         "float, title:^(Open File)$"
         "float, title:^(Save File)$"
       ];
