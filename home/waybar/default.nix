@@ -3,7 +3,7 @@
 {
   programs.waybar = {
     enable = true;
-    
+
     settings = {
       mainBar = {
         layer = "top";
@@ -12,7 +12,7 @@
         spacing = 5;
         margin-bottom = -11;
         output = "DP-1";
-        
+      
         modules-left = [ "hyprland/workspaces" ];
         modules-center = [ "custom/countdown" ];
         modules-right = [ 
@@ -21,7 +21,7 @@
           "pulseaudio"
           "clock" 
         ];
-        
+      
         "hyprland/workspaces" = {
           format = "{icon}";
           format-active = " {icon} ";
@@ -33,21 +33,21 @@
             "4" = [];
           };
         };
-        
+      
         clock = {
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
           interval = 60;
           format = "{:%H:%M}";
         };
-        
+      
         network = {
           format = "";
           format-ethernet = "󰈀";
           format-disconnected = "󰖪";
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
-          on-click = "nm-connection-editor";
+          on-click = "kitty --class impala -e impala";
         };
-        
+      
         "custom/bluetooth" = {
           format = "{}";
           return-type = "json";
@@ -65,7 +65,7 @@
           on-click = "blueman-manager";
           interval = 5;
         };
-        
+      
         pulseaudio = {
           format = "{icon} {volume}%";
           format-muted = "󰝟";
@@ -74,7 +74,7 @@
           };
           on-click = "pavucontrol";
         };
-        
+      
         "custom/countdown" = {
           return-type = "json";
           format = "{}";
@@ -94,7 +94,7 @@
         };
       };
     };
-    
+
     style = ''
       /* Waybar Style Configuration - Minimalist Grayscale Theme */
 
