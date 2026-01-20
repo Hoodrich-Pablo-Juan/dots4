@@ -177,22 +177,22 @@
         offset = "30x50";
         origin = "top-right";
         transparency = 10;
-        frame_color = "#d1d5db";
+        frame_color = "#CCCCCC";
         font = "JetBrainsMono Nerd Font 10";
       };
       urgency_low = {
-        background = "#f9fafb";
-        foreground = "#6b7280";
+        background = "#CCCCCC";
+        foreground = "#474747";
         timeout = 5;
       };
       urgency_normal = {
-        background = "#f9fafb";
-        foreground = "#374151";
+        background = "#CCCCCC";
+        foreground = "#333333";
         timeout = 10;
       };
       urgency_critical = {
-        background = "#fef2f2";
-        foreground = "#dc2626";
+        background = "#CCCCCC";
+        foreground = "#000000";
         timeout = 0;
       };
     };
