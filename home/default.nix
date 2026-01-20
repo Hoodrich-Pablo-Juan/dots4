@@ -12,16 +12,15 @@
         spacing = 5;
         margin-bottom = -11;
         output = "DP-1";
-
+      
         modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "custom/countdown" ];
-        modules-right = [
-          "network"
-          "custom/bluetooth"
+        modules-center = [ "clock" ];
+        modules-right = [ 
+          "network" 
+          "custom/bluetooth" 
           "pulseaudio"
-          "clock"
         ];
-
+      
         "hyprland/workspaces" = {
           format = "{icon}";
           format-active = " {icon} ";
@@ -33,13 +32,13 @@
             "4" = [];
           };
         };
-
+      
         clock = {
           tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
           interval = 60;
           format = "{:%H:%M}";
         };
-
+      
         network = {
           format = "";
           format-ethernet = "󰈀";
@@ -47,7 +46,7 @@
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
           on-click = "iwgtk";
         };
-
+      
         "custom/bluetooth" = {
           format = "{}";
           return-type = "json";
@@ -65,7 +64,7 @@
           on-click = "blueman-manager";
           interval = 5;
         };
-
+      
         pulseaudio = {
           format = "{icon} {volume}%";
           format-muted = "󰝟";
@@ -74,28 +73,12 @@
           };
           on-click = "pavucontrol";
         };
-
-        "custom/countdown" = {
-          return-type = "json";
-          format = "{}";
-          exec = ''
-            now=$(date +%s)
-            target=$(date -d '22:00' +%s)
-            if [ "$now" -gt "$target" ]; then
-              target=$(date -d 'tomorrow 22:00' +%s)
-            fi
-            remaining=$((target - now))
-            hours=$((remaining / 3600))
-            minutes=$(((remaining % 3600) / 60))
-            printf '{"text": "󰔟 %dh %dm"}' "$hours" "$minutes"
-          '';
-          interval = 60;
-          tooltip = false;
-        };
       };
     };
 
     style = ''
+      /* Waybar Style Configuration - Minimalist Grayscale Theme */
+
       * {
           font-family: 'Inter', 'FiraCode Nerd Font', 'Roboto', 'Open Sans', sans-serif;
           font-size: 13px;
@@ -109,8 +92,7 @@
           background-color: transparent;
       }
 
-      /* Pills */
-      #clock,
+      /* --- Base styling for VISIBLE pills --- */
       #custom-media,
       #tray,
       #mode,
@@ -130,65 +112,67 @@
           margin-top: 10px;
           margin-bottom: 10px;
           margin-right: 10px;
+          font-weight: 300;
+          border: none;
+          box-shadow: none;
       }
 
-      /* Countdown: NO pill */
-      #custom-countdown {
-          background: transparent;
-          padding: 0;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-right: 10px;
-          color: #1f2937;
-      }
-
-      /* Connectivity icons */
-      #network, #custom-bluetooth {
+      /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS AND CLOCK --- */
+      #network, #custom-bluetooth, #clock {
           background: transparent;
           padding: 0 5px;
           margin-top: 10px;
           margin-bottom: 10px;
+          margin-right: 0px;
       }
 
-      #network.wifi,
-      #network.ethernet,
-      #custom-bluetooth.connected,
-      #custom-bluetooth.on {
+      /* Clock specific styling */
+      #clock {
+          color: #111827;
+          font-size: 14px;
+          padding: 0 10px;
+      }
+
+      /* --- UPDATED ICON COLORS --- */
+      #network.wifi, #network.ethernet, #custom-bluetooth.connected, #custom-bluetooth.on {
           color: #111827;
       }
-
-      #network.disconnected,
-      #custom-bluetooth.off {
+      #network.disconnected, #custom-bluetooth.off {
           color: #4b5563;
       }
 
+      #custom-dynamic_pill label { color: #111827; }
+      #custom-dynamic_pill.paused label { color: #4b5563; }
+      #workspaces button label { color: #374151; }
+      #workspaces button.active label { color: #ffffff; }
+
       #workspaces {
           background-color: transparent;
-          margin: 10px 10px 10px 25px;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-right: 10px;
+          margin-left: 25px;
       }
 
       #workspaces button {
           background-color: #ffffff;
           border-radius: 15px;
           margin-right: 10px;
-          padding: 4px 10px 2px 10px;
+          padding: 10px;
+          padding-top: 4px;
+          padding-bottom: 2px;
           transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
       }
 
       #workspaces button.active {
-          padding: 3px 20px;
-          background: linear-gradient(
-            45deg,
-            #111827,
-            #1f2937,
-            #374151,
-            #4b5563,
-            #374151,
-            #111827
-          );
+          padding-right: 20px;
+          padding-left: 20px;
+          padding-bottom: 3px;
+          background: linear-gradient(45deg, #111827 0%, #1f2937 20%, #374151 40%, #4b5563 60%, #374151 80%, #111827 100%);
           background-size: 400% 400%;
           color: #ffffff;
           animation: gradient_f 20s ease-in-out infinite;
+          transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
       }
 
       @keyframes gradient_f {
@@ -197,20 +181,15 @@
           100% { background-position: 400% 200%; }
       }
 
-      #clock {
-          background: linear-gradient(135deg, #f3f4f6, #e5e7eb, #f3f4f6);
-          background-size: 200% 200%;
-          animation: gradient 10s ease infinite;
+      #pulseaudio { 
+          background-color: #e5e7eb; 
+          color: #1f2937; 
           margin-right: 25px;
-          color: #111827;
-          font-size: 14px;
-          padding: 5px 21px;
       }
 
-      @keyframes gradient {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
+      #tray { 
+          background-color: #f3f4f6; 
+          padding: 5px 10px; 
       }
     '';
   };
