@@ -62,7 +62,7 @@
 
       general = {
         gaps_in = 8;
-        gaps_out = 28;
+        gaps_out = 16;
         border_size = 1;
         "col.active_border" = "rgba(333333cc)";
         "col.inactive_border" = "rgba(33333377)";
@@ -76,17 +76,18 @@
         inactive_opacity = "0.92";
         blur = {
           enabled = true;
-          size = 20;
-          passes = 4;
+          size = 18;
+          passes = 3;
           new_optimizations = true;
           ignore_opacity = false;
-          vibrancy = "0.2";
-          special = true;
+          vibrancy = "0.18";
         };
         shadow = {
           enabled = true;
-          range = 4;
-          render_power = 3;
+          range = 30;
+          render_power = 2;
+          color = "rgba(00000055)";
+          offset = "0 4";
         };
       };
 
