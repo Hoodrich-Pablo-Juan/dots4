@@ -1,4 +1,6 @@
-{ config, pkgs, ... }:
+{ config, pkgs, ...   # Copy wallpaper from repo to home directory
+  home.file.".config/wallpapers/wallpaper.jpg".source = ../wallpapers/eink.jpg;
+}:
 
 {
   imports = [
