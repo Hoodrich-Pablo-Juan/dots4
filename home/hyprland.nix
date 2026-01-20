@@ -15,7 +15,7 @@
       exec-once = [
         "waybar"
         "hyprctl setcursor Bibata-Modern-Classic 24"  # Set cursor theme
-        "swaybg -i ~/.config/wallpapers/wallpaper.jpg -m fill"
+        "swaybg -i ~/.config/nixos/wallpapers/wallpaper.jpg -m fill"
         "hyprsunset -t 3400"
         "brightnessctl set 10%"
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
