@@ -1,230 +1,207 @@
 { config, pkgs, ... }:
 
 {
-  programs.waybar = {
-    enable = true;
+  imports = [
+    ./hyprland.nix
+    ./waybar
+    ./packages.nix
+    ./wofi.nix
+  ];
 
+  home.username = "bryllm";
+  home.homeDirectory = "/home/bryllm";
+  home.stateVersion = "25.11";
+
+  programs.home-manager.enable = true;
+
+  programs.bash = {
+    enable = true;
+    profileExtra = ''
+      # Hyprland auto-start on TTY1
+      if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
+        exec Hyprland
+      fi
+    '';
+  };
+
+  # Kitty terminal configuration with transparency
+  programs.kitty = {
+    enable = true;
     settings = {
-      mainBar = {
-        layer = "top";
-        position = "top";
-        height = 30;
-        spacing = 5;
-        margin-bottom = -11;
-        output = "DP-1";
+      background_opacity = "0.78";
+      background_blur = 64;
+      font_family = "JetBrainsMono Nerd Font";
+      font_size = "11.0";
       
-        modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "custom/countdown" ];
-        modules-right = [ 
-          "network" 
-          "custom/bluetooth" 
-          "pulseaudio"
-          "clock" 
-        ];
+      window_padding_width = 16;
       
-        "hyprland/workspaces" = {
-          format = "{icon}";
-          format-active = " {icon} ";
-          on-click = "activate";
-          persistent-workspaces = {
-            "1" = [];
-            "2" = [];
-            "3" = [];
-            "4" = [];
-          };
+      # E-ink theme colors (matching ghostty config)
+      foreground = "#333333";
+      background = "#CCCCCC";
+      selection_foreground = "#CCCCCC";
+      selection_background = "#333333";
+      
+      # Cursor colors
+      cursor = "#333333";
+      cursor_text_color = "#CCCCCC";
+      
+      # Black
+      color0 = "#333333";
+      color8 = "#474747";
+      
+      # Red
+      color1 = "#474747";
+      color9 = "#5A5A5A";
+      
+      # Green
+      color2 = "#474747";
+      color10 = "#5A5A5A";
+      
+      # Yellow
+      color3 = "#474747";
+      color11 = "#5A5A5A";
+      
+      # Blue
+      color4 = "#474747";
+      color12 = "#5A5A5A";
+      
+      # Magenta
+      color5 = "#474747";
+      color13 = "#5A5A5A";
+      
+      # Cyan
+      color6 = "#474747";
+      color14 = "#5A5A5A";
+      
+      # White
+      color7 = "#AFAFAF";
+      color15 = "#FFFFFF";
+    };
+  };
+
+  # Alacritty terminal configuration (backup)
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      window = {
+        opacity = 0.78;
+        blur = true;
+        padding = {
+          x = 16;
+          y = 16;
         };
-      
-        clock = {
-          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-          interval = 60;
-          format = "{:%H:%M}";
+        decorations = "Full";
+      };
+      font = {
+        normal = {
+          family = "JetBrainsMono Nerd Font Mono";
+          style = "Regular";
         };
-      
-        network = {
-          format = "";
-          format-ethernet = "󰈀";
-          format-disconnected = "󰖪";
-          tooltip-format-wifi = "{essid} ({signalStrength}%)";
-          on-click = "kitty --class impala -e impala";
+        size = 12.0;
+      };
+      colors = {
+        primary = {
+          background = "0xCCCCCC";
+          foreground = "0x333333";
         };
-      
-        "custom/bluetooth" = {
-          format = "{}";
-          return-type = "json";
-          exec = ''
-            if bluetoothctl show | grep -q 'Powered: yes'; then
-              if bluetoothctl devices Connected | grep -q 'Device'; then
-                echo '{"text": "", "class": "connected"}'
-              else
-                echo '{"text": "󰂯", "class": "on"}'
-              fi
-            else
-              echo '{"text": "󰂲", "class": "off"}'
-            fi
-          '';
-          on-click = "blueman-manager";
-          interval = 5;
+        normal = {
+          black = "0x333333";
+          red = "0x474747";
+          green = "0x474747";
+          yellow = "0x474747";
+          blue = "0x474747";
+          magenta = "0x474747";
+          cyan = "0x474747";
+          white = "0xAFAFAF";
         };
-      
-        pulseaudio = {
-          format = "{icon} {volume}%";
-          format-muted = "󰝟";
-          format-icons = {
-            default = [ "󰕿" "󰖀" "󰕾" ];
-          };
-          on-click = "pavucontrol";
-        };
-      
-        "custom/countdown" = {
-          return-type = "json";
-          format = "{}";
-          exec = ''
-            now=$(date +%s)
-            target=$(date -d '22:00' +%s)
-            if [ "$now" -gt "$target" ]; then
-              target=$(date -d 'tomorrow 22:00' +%s)
-            fi
-            remaining=$((target - now))
-            hours=$((remaining / 3600))
-            minutes=$(((remaining % 3600) / 60))
-            printf '{"text": "󰔟 %dh %dm"}' "$hours" "$minutes"
-          '';
-          interval = 60;
-          tooltip = false;
+        bright = {
+          black = "0x474747";
+          red = "0x5A5A5A";
+          green = "0x5A5A5A";
+          yellow = "0x5A5A5A";
+          blue = "0x5A5A5A";
+          magenta = "0x5A5A5A";
+          cyan = "0x5A5A5A";
+          white = "0xFFFFFF";
         };
       };
     };
+  };
 
-    style = ''
-      /* Waybar Style Configuration - Minimalist Grayscale Theme */
+  # GTK configuration for light theme
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Adwaita";
+      package = pkgs.gnome-themes-extra;
+    };
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
+    };
+    cursorTheme = {
+      name = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
+      size = 24;
+    };
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = false;
+    };
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = false;
+    };
+  };
 
-      * {
-          font-family: 'Inter', 'FiraCode Nerd Font', 'Roboto', 'Open Sans', sans-serif;
-          font-size: 13px;
-          font-weight: 300;
-          border: none;
-          box-shadow: none;
-          text-shadow: none;
-      }
+  # Qt configuration for light theme
+  qt = {
+    enable = true;
+    platformTheme.name = "gtk3";
+    style.name = "adwaita";
+  };
 
-      window#waybar {
-          background-color: transparent;
-      }
+  # Cursor theme for Wayland
+  home.pointerCursor = {
+    name = "Bibata-Modern-Classic";
+    package = pkgs.bibata-cursors;
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
+  };
 
-      /* --- Base styling for VISIBLE pills --- */
-      #clock,
-      #custom-media,
-      #tray,
-      #mode,
-      #idle_inhibitor,
-      #custom-expand,
-      #custom-cycle_wall,
-      #custom-ss,
-      #custom-dynamic_pill,
-      #custom-weather,
-      #mpd,
-      #uptime,
-      #pulseaudio,
-      #custom-countdown {
-          padding: 0 10px;
-          border-radius: 15px;
-          background: #ffffff;
-          color: #374151;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-right: 10px;
-          font-weight: 300;
-          border: none;
-          box-shadow: none;
-      }
+  # Dunst notification daemon configuration
+  services.dunst = {
+    enable = true;
+    settings = {
+      global = {
+        width = 300;
+        height = 300;
+        offset = "30x50";
+        origin = "top-right";
+        transparency = 10;
+        frame_color = "#CCCCCC";
+        font = "JetBrainsMono Nerd Font 10";
+      };
+      urgency_low = {
+        background = "#CCCCCC";
+        foreground = "#474747";
+        timeout = 5;
+      };
+      urgency_normal = {
+        background = "#CCCCCC";
+        foreground = "#333333";
+        timeout = 10;
+      };
+      urgency_critical = {
+        background = "#CCCCCC";
+        foreground = "#000000";
+        timeout = 0;
+      };
+    };
+  };
 
-      /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS --- */
-      #network, #custom-bluetooth {
-          background: transparent;
-          padding: 0 5px;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-right: 0px;
-      }
-
-      /* --- UPDATED ICON COLORS --- */
-      #network.wifi, #network.ethernet, #custom-bluetooth.connected, #custom-bluetooth.on {
-          color: #111827;
-      }
-      #network.disconnected, #custom-bluetooth.off {
-          color: #4b5563;
-      }
-
-      #custom-dynamic_pill label { color: #111827; }
-      #custom-dynamic_pill.paused label { color: #4b5563; }
-      #workspaces button label { color: #374151; }
-      #workspaces button.active label { color: #ffffff; }
-
-      #workspaces {
-          background-color: transparent;
-          margin-top: 10px;
-          margin-bottom: 10px;
-          margin-right: 10px;
-          margin-left: 25px;
-      }
-
-      #workspaces button {
-          background-color: #ffffff;
-          border-radius: 15px;
-          margin-right: 10px;
-          padding: 10px;
-          padding-top: 4px;
-          padding-bottom: 2px;
-          transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
-      }
-
-      #workspaces button.active {
-          padding-right: 20px;
-          padding-left: 20px;
-          padding-bottom: 3px;
-          background: linear-gradient(45deg, #111827 0%, #1f2937 20%, #374151 40%, #4b5563 60%, #374151 80%, #111827 100%);
-          background-size: 400% 400%;
-          color: #ffffff;
-          animation: gradient_f 20s ease-in-out infinite;
-          transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
-      }
-
-      @keyframes gradient_f {
-          0% { background-position: 0% 200%; }
-          50% { background-position: 200% 0%; }
-          100% { background-position: 400% 200%; }
-      }
-
-      #pulseaudio { 
-          background-color: #e5e7eb; 
-          color: #1f2937; 
-      }
-
-      #custom-countdown { 
-          background-color: #d1d5db; 
-          color: #1f2937; 
-      }
-
-      #clock {
-          background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
-          background-size: 200% 200%;
-          animation: gradient 10s ease infinite;
-          margin-right: 25px;
-          color: #111827;
-          font-size: 14px;
-          padding: 5px 21px 5px 20px;
-      }
-
-      @keyframes gradient {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-      }
-
-      #tray { 
-          background-color: #f3f4f6; 
-          padding: 5px 10px; 
-      }
-    '';
+  # Download wallpaper automatically
+  home.file.".config/wallpapers/eink.jpg".source = pkgs.fetchurl {
+    url = "https://gitlab.com/dotfiles_hypr/eink/-/raw/main/wallpapers/eink.jpg";
+    sha256 = "0000000000000000000000000000000000000000000000000000";
   };
 }
