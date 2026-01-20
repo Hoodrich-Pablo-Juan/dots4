@@ -198,16 +198,4 @@
       };
     };
   };
-
-  # Download wallpaper automatically
-  home.activation.downloadWallpaper = config.lib.dag.entryAfter ["writeBoundary"] ''
-    WALLPAPER_DIR="$HOME/.config/wallpapers"
-    WALLPAPER_FILE="$WALLPAPER_DIR/wallpaper.jpg"
-    
-    if [ ! -f "$WALLPAPER_FILE" ]; then
-      $DRY_RUN_CMD mkdir -p "$WALLPAPER_DIR"
-      $DRY_RUN_CMD ${pkgs.wget}/bin/wget -O "$WALLPAPER_FILE" \
-        "https://gitlab.com/dotfiles_hypr/eink/-/raw/main/wallpapers/eink.jpg" || true
-    fi
-  '';
 }
