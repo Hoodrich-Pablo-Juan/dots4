@@ -5,6 +5,7 @@
     ./hyprland.nix
     ./waybar
     ./packages.nix
+    ./wofi.nix
   ];
 
   home.username = "bryllm";
