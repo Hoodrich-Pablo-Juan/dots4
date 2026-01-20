@@ -8,9 +8,9 @@
       mainBar = {
         layer = "top";
         position = "top";
-        height = 26;
-        spacing = 0;
-        exclusive = false;
+        height = 30;
+        spacing = 5;
+        margin-bottom = -11;
         output = "DP-1";
       
         modules-left = [ "hyprland/workspaces" ];
@@ -96,60 +96,134 @@
     };
 
     style = ''
+      /* Waybar Style Configuration - Minimalist Grayscale Theme */
+
       * {
-        font-family: "SF Pro Text", "SF Pro Display", "Font Awesome 6 Free Solid", "Font Awesome 6 Free";
-        font-size: 13px;
-        font-weight: 400;
-        color: #000000;
-        background: transparent;
-        min-height: 0;
+          font-family: 'Inter', 'FiraCode Nerd Font', 'Roboto', 'Open Sans', sans-serif;
+          font-size: 13px;
+          font-weight: 300;
+          border: none;
+          box-shadow: none;
+          text-shadow: none;
       }
 
-      window#waybar { background: transparent; }
-
-      #workspaces, #group-status, #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
-        margin: 0;
-        padding-top: 0;
-        padding-bottom: 0;
+      window#waybar {
+          background-color: transparent;
       }
+
+      /* --- Base styling for VISIBLE pills --- */
+      #clock,
+      #custom-media,
+      #tray,
+      #mode,
+      #idle_inhibitor,
+      #custom-expand,
+      #custom-cycle_wall,
+      #custom-ss,
+      #custom-dynamic_pill,
+      #custom-weather,
+      #mpd,
+      #uptime,
+      #pulseaudio,
+      #custom-countdown {
+          padding: 0 10px;
+          border-radius: 15px;
+          background: #ffffff;
+          color: #374151;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-right: 10px;
+          font-weight: 300;
+          border: none;
+          box-shadow: none;
+      }
+
+      /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS --- */
+      #network, #custom-bluetooth {
+          background: transparent;
+          padding: 0 5px;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-right: 0px;
+      }
+
+      /* --- UPDATED ICON COLORS --- */
+      #network.wifi, #network.ethernet, #custom-bluetooth.connected, #custom-bluetooth.on {
+          color: #111827;
+      }
+      #network.disconnected, #custom-bluetooth.off {
+          color: #4b5563;
+      }
+
+      #custom-dynamic_pill label { color: #111827; }
+      #custom-dynamic_pill.paused label { color: #4b5563; }
+      #workspaces button label { color: #374151; }
+      #workspaces button.active label { color: #ffffff; }
 
       #workspaces {
-        padding: 0 4px;
+          background-color: transparent;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-right: 10px;
+          margin-left: 25px;
       }
 
       #workspaces button {
-        font-size: 12px;
-        color: #333333;
-        background: transparent;
-        border: none;
-        padding: 0 6px;
-        margin: 0 6px 0 0;
-        border-radius: 0;
-        box-shadow: none;
-        min-height: 0;
+          background-color: #ffffff;
+          border-radius: 15px;
+          margin-right: 10px;
+          padding: 10px;
+          padding-top: 4px;
+          padding-bottom: 2px;
+          transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
       }
 
       #workspaces button.active {
-        background: transparent;
-        color: #333333;
-        border-bottom: 2px solid #333333;
-        padding-bottom: 0;
+          padding-right: 20px;
+          padding-left: 20px;
+          padding-bottom: 3px;
+          background: linear-gradient(45deg, #111827 0%, #1f2937 20%, #374151 40%, #4b5563 60%, #374151 80%, #111827 100%);
+          background-size: 400% 400%;
+          color: #ffffff;
+          animation: gradient_f 20s ease-in-out infinite;
+          transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
       }
 
-      #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
-        background: transparent;
-        color: #000000;
-        padding: 0 4px;
-        margin-right: 20px;
+      @keyframes gradient_f {
+          0% { background-position: 0% 200%; }
+          50% { background-position: 200% 0%; }
+          100% { background-position: 400% 200%; }
+      }
+
+      #pulseaudio { 
+          background-color: #e5e7eb; 
+          color: #1f2937; 
+      }
+
+      #custom-countdown { 
+          background-color: #d1d5db; 
+          color: #1f2937; 
       }
 
       #clock {
-        font-weight: 500;
-        font-size: 13px;
+          background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+          background-size: 200% 200%;
+          animation: gradient 10s ease infinite;
+          margin-right: 25px;
+          color: #111827;
+          font-size: 14px;
+          padding: 5px 21px 5px 20px;
       }
 
-      #custom-countdown {
-        font-size: 12px;
+      @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+      }
+
+      #tray { 
+          background-color: #f3f4f6; 
+          padding: 5px 10px; 
       }
     '';
   };
