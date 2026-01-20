@@ -14,12 +14,11 @@
         output = "DP-1";
       
         modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "custom/countdown" ];
+        modules-center = [ "clock" ];
         modules-right = [ 
           "network" 
           "custom/bluetooth" 
           "pulseaudio"
-          "clock" 
         ];
       
         "hyprland/workspaces" = {
@@ -45,7 +44,7 @@
           format-ethernet = "󰈀";
           format-disconnected = "󰖪";
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
-          on-click = "kitty --class impala -e impala";
+          on-click = "iwgtk";
         };
       
         "custom/bluetooth" = {
@@ -74,24 +73,6 @@
           };
           on-click = "pavucontrol";
         };
-      
-        "custom/countdown" = {
-          return-type = "json";
-          format = "{}";
-          exec = ''
-            now=$(date +%s)
-            target=$(date -d '22:00' +%s)
-            if [ "$now" -gt "$target" ]; then
-              target=$(date -d 'tomorrow 22:00' +%s)
-            fi
-            remaining=$((target - now))
-            hours=$((remaining / 3600))
-            minutes=$(((remaining % 3600) / 60))
-            printf '{"text": "󰔟 %dh %dm"}' "$hours" "$minutes"
-          '';
-          interval = 60;
-          tooltip = false;
-        };
       };
     };
 
@@ -112,7 +93,6 @@
       }
 
       /* --- Base styling for VISIBLE pills --- */
-      #clock,
       #custom-media,
       #tray,
       #mode,
@@ -124,8 +104,7 @@
       #custom-weather,
       #mpd,
       #uptime,
-      #pulseaudio,
-      #custom-countdown {
+      #pulseaudio {
           padding: 0 10px;
           border-radius: 15px;
           background: #ffffff;
@@ -138,13 +117,20 @@
           box-shadow: none;
       }
 
-      /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS --- */
-      #network, #custom-bluetooth {
+      /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS AND CLOCK --- */
+      #network, #custom-bluetooth, #clock {
           background: transparent;
           padding: 0 5px;
           margin-top: 10px;
           margin-bottom: 10px;
           margin-right: 0px;
+      }
+
+      /* Clock specific styling */
+      #clock {
+          color: #111827;
+          font-size: 14px;
+          padding: 0 10px;
       }
 
       /* --- UPDATED ICON COLORS --- */
@@ -198,27 +184,7 @@
       #pulseaudio { 
           background-color: #e5e7eb; 
           color: #1f2937; 
-      }
-
-      #custom-countdown { 
-          background-color: #d1d5db; 
-          color: #1f2937; 
-      }
-
-      #clock {
-          background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
-          background-size: 200% 200%;
-          animation: gradient 10s ease infinite;
           margin-right: 25px;
-          color: #111827;
-          font-size: 14px;
-          padding: 5px 21px 5px 20px;
-      }
-
-      @keyframes gradient {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
       }
 
       #tray { 
