@@ -1,207 +1,311 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    ./hyprland.nix
-    ./waybar
-    ./packages.nix
-    ./wofi.nix
-  ];
-
-  home.username = "bryllm";
-  home.homeDirectory = "/home/bryllm";
-  home.stateVersion = "25.11";
-
-  programs.home-manager.enable = true;
-
-  programs.bash = {
+  programs.waybar = {
     enable = true;
-    profileExtra = ''
-      # Hyprland auto-start on TTY1
-      if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
-        exec Hyprland
-      fi
+
+    settings = {
+      mainBar = {
+        layer = "top";
+        position = "top";
+        height = 26;
+        spacing = 0;
+        exclusive = false;
+        output = "DP-1";
+      
+        modules-left = [ "hyprland/workspaces" ];
+        modules-center = [ "custom/countdown" ];
+        modules-right = [ 
+          "network" 
+          "custom/bluetooth" 
+          "pulseaudio"
+          "clock" 
+        ];
+      
+        "hyprland/workspaces" = {
+          format = "{name}";
+          active-only = false;
+          show-empty = false;
+          all-outputs = false;
+          sort-by-number = true;
+          on-click = "activate";
+          on-scroll-up = "hyprctl dispatch workspace e-1";
+          on-scroll-down = "hyprctl dispatch workspace e+1";
+        };
+      
+        clock = {
+          tooltip = false;
+          format = "{:%a %e, %H:%M}";
+        };
+      
+        network = {
+          format = "";
+          format-ethernet = "󰈀";
+          format-disconnected = "󰖪";
+          tooltip-format-wifi = "{essid} ({signalStrength}%)";
+          on-click = "kitty --class impala -e impala";
+        };
+      
+        "custom/bluetooth" = {
+          format = "{}";
+          return-type = "json";
+          exec = ''
+            if bluetoothctl show | grep -q 'Powered: yes'; then
+              if bluetoothctl devices Connected | grep -q 'Device'; then
+                echo '{"text": "", "class": "connected"}'
+              else
+                echo '{"text": "󰂯", "class": "on"}'
+              fi
+            else
+              echo '{"text": "󰂲", "class": "off"}'
+            fi
+          '';
+          on-click = "blueman-manager";
+          interval = 5;
+        };
+      
+        pulseaudio = {
+          tooltip = false;
+          scroll-step = 2;
+          format = "{icon}  {volume}%";
+          format-muted = "  {volume}%";
+          format-icons = {
+            default = [ "" "" ];
+            headphones = "";
+          };
+          on-click = "pavucontrol";
+        };
+      
+        "custom/countdown" = {
+          return-type = "json";
+          format = "{}";
+          exec = ''
+            now=$(date +%s)
+            target=$(date -d '22:00' +%s)
+            if [ "$now" -gt "$target" ]; then
+              target=$(date -d 'tomorrow 22:00' +%s)
+            fi
+            remaining=$((target - now))
+            hours=$((remaining / 3600))
+            minutes=$(((remaining % 3600) / 60))
+            printf '{"text": "󰔟 %dh %dm"}' "$hours" "$minutes"
+          '';
+          interval = 60;
+          tooltip = false;
+        };
+      };
+    };
+
+    style = ''
+      * {
+        font-family: "SF Pro Text", "SF Pro Display", "Font Awesome 6 Free Solid", "Font Awesome 6 Free";
+        font-size: 13px;
+        font-weight: 400;
+        color: #000000;
+        background: transparent;
+        min-height: 0;
+      }
+
+      window#waybar { background: transparent; }
+
+      #workspaces, #group-status, #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
+        margin: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
+      #workspaces {
+        padding: 0 4px;
+      }
+
+      #workspaces button {
+        font-size: 12px;
+        color: #333333;
+        background: transparent;
+        border: none;
+        padding: 0 6px;
+        margin: 0 6px 0 0;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 0;
+      }
+
+      #workspaces button.active {
+        background: transparent;
+        color: #333333;
+        border-bottom: 2px solid #333333;
+        padding-bottom: 0;
+      }
+
+      #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
+        background: transparent;
+        color: #000000;
+        padding: 0 4px;
+        margin-right: 20px;
+      }
+
+      #clock {
+        font-weight: 500;
+        font-size: 13px;
+      }
+
+      #custom-countdown {
+        font-size: 12px;
+      }
     '';
   };
+}{ config, pkgs, ... }:
 
-  # Kitty terminal configuration with transparency
-  programs.kitty = {
+{
+  programs.waybar = {
     enable = true;
+
     settings = {
-      background_opacity = "0.78";
-      background_blur = 64;
-      font_family = "JetBrainsMono Nerd Font";
-      font_size = "11.0";
+      mainBar = {
+        layer = "top";
+        position = "top";
+        height = 26;
+        spacing = 0;
+        exclusive = false;
+        output = "DP-1";
       
-      window_padding_width = 16;
-      
-      # E-ink theme colors (matching ghostty config)
-      foreground = "#333333";
-      background = "#CCCCCC";
-      selection_foreground = "#CCCCCC";
-      selection_background = "#333333";
-      
-      # Cursor colors
-      cursor = "#333333";
-      cursor_text_color = "#CCCCCC";
-      
-      # Black
-      color0 = "#333333";
-      color8 = "#474747";
-      
-      # Red
-      color1 = "#474747";
-      color9 = "#5A5A5A";
-      
-      # Green
-      color2 = "#474747";
-      color10 = "#5A5A5A";
-      
-      # Yellow
-      color3 = "#474747";
-      color11 = "#5A5A5A";
-      
-      # Blue
-      color4 = "#474747";
-      color12 = "#5A5A5A";
-      
-      # Magenta
-      color5 = "#474747";
-      color13 = "#5A5A5A";
-      
-      # Cyan
-      color6 = "#474747";
-      color14 = "#5A5A5A";
-      
-      # White
-      color7 = "#AFAFAF";
-      color15 = "#FFFFFF";
-    };
-  };
-
-  # Alacritty terminal configuration (backup)
-  programs.alacritty = {
-    enable = true;
-    settings = {
-      window = {
-        opacity = 0.78;
-        blur = true;
-        padding = {
-          x = 16;
-          y = 16;
+        modules-left = [ "hyprland/workspaces" ];
+        modules-center = [ "custom/countdown" ];
+        modules-right = [ 
+          "network" 
+          "custom/bluetooth" 
+          "pulseaudio"
+          "clock" 
+        ];
+        "hyprland/workspaces" = {
+          format = "{icon}";
+          format-active = " {icon} ";
+          on-click = "activate";
+          persistent-workspaces = {
+            "1" = [];
+            "2" = [];
+            "3" = [];
+            "4" = [];
+          };
         };
-        decorations = "Full";
-      };
-      font = {
-        normal = {
-          family = "JetBrainsMono Nerd Font Mono";
-          style = "Regular";
+      
+        clock = {
+          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          interval = 60;
+          format = "{:%H:%M}";
         };
-        size = 12.0;
-      };
-      colors = {
-        primary = {
-          background = "0xCCCCCC";
-          foreground = "0x333333";
+      
+        network = {
+          format = "";
+          format-ethernet = "󰈀";
+          format-disconnected = "󰖪";
+          tooltip-format-wifi = "{essid} ({signalStrength}%)";
+          on-click = "kitty --class impala -e impala";
         };
-        normal = {
-          black = "0x333333";
-          red = "0x474747";
-          green = "0x474747";
-          yellow = "0x474747";
-          blue = "0x474747";
-          magenta = "0x474747";
-          cyan = "0x474747";
-          white = "0xAFAFAF";
+      
+        "custom/bluetooth" = {
+          format = "{}";
+          return-type = "json";
+          exec = ''
+            if bluetoothctl show | grep -q 'Powered: yes'; then
+              if bluetoothctl devices Connected | grep -q 'Device'; then
+                echo '{"text": "", "class": "connected"}'
+              else
+                echo '{"text": "󰂯", "class": "on"}'
+              fi
+            else
+              echo '{"text": "󰂲", "class": "off"}'
+            fi
+          '';
+          on-click = "blueman-manager";
+          interval = 5;
         };
-        bright = {
-          black = "0x474747";
-          red = "0x5A5A5A";
-          green = "0x5A5A5A";
-          yellow = "0x5A5A5A";
-          blue = "0x5A5A5A";
-          magenta = "0x5A5A5A";
-          cyan = "0x5A5A5A";
-          white = "0xFFFFFF";
+      
+        pulseaudio = {
+          format = "{icon} {volume}%";
+          format-muted = "󰝟";
+          format-icons = {
+            default = [ "󰕿" "󰖀" "󰕾" ];
+          };
+          on-click = "pavucontrol";
+        };
+      
+        "custom/countdown" = {
+          return-type = "json";
+          format = "{}";
+          exec = ''
+            now=$(date +%s)
+            target=$(date -d '22:00' +%s)
+            if [ "$now" -gt "$target" ]; then
+              target=$(date -d 'tomorrow 22:00' +%s)
+            fi
+            remaining=$((target - now))
+            hours=$((remaining / 3600))
+            minutes=$(((remaining % 3600) / 60))
+            printf '{"text": "󰔟 %dh %dm"}' "$hours" "$minutes"
+          '';
+          interval = 60;
+          tooltip = false;
         };
       };
     };
-  };
 
-  # GTK configuration for light theme
-  gtk = {
-    enable = true;
-    theme = {
-      name = "Adwaita";
-      package = pkgs.gnome-themes-extra;
-    };
-    iconTheme = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
-    };
-    cursorTheme = {
-      name = "Bibata-Modern-Classic";
-      package = pkgs.bibata-cursors;
-      size = 24;
-    };
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = false;
-    };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = false;
-    };
-  };
+    style = ''
+      * {
+        font-family: "SF Pro Text", "SF Pro Display", "Font Awesome 6 Free Solid", "Font Awesome 6 Free";
+        font-size: 13px;
+        font-weight: 400;
+        color: #000000;
+        background: transparent;
+        min-height: 0;
+      }
 
-  # Qt configuration for light theme
-  qt = {
-    enable = true;
-    platformTheme.name = "gtk3";
-    style.name = "adwaita";
-  };
+      window#waybar { background: transparent; }
 
-  # Cursor theme for Wayland
-  home.pointerCursor = {
-    name = "Bibata-Modern-Classic";
-    package = pkgs.bibata-cursors;
-    size = 24;
-    gtk.enable = true;
-    x11.enable = true;
-  };
+      #workspaces, #group-status, #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
+        margin: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+      }
 
-  # Dunst notification daemon configuration
-  services.dunst = {
-    enable = true;
-    settings = {
-      global = {
-        width = 300;
-        height = 300;
-        offset = "30x50";
-        origin = "top-right";
-        transparency = 10;
-        frame_color = "#CCCCCC";
-        font = "JetBrainsMono Nerd Font 10";
-      };
-      urgency_low = {
-        background = "#CCCCCC";
-        foreground = "#474747";
-        timeout = 5;
-      };
-      urgency_normal = {
-        background = "#CCCCCC";
-        foreground = "#333333";
-        timeout = 10;
-      };
-      urgency_critical = {
-        background = "#CCCCCC";
-        foreground = "#000000";
-        timeout = 0;
-      };
-    };
-  };
+      #workspaces {
+        padding: 0 4px;
+      }
 
-  # Download wallpaper automatically
-  home.file.".config/wallpapers/eink.jpg".source = pkgs.fetchurl {
-    url = "https://gitlab.com/dotfiles_hypr/eink/-/raw/main/wallpapers/eink.jpg";
-    sha256 = "0000000000000000000000000000000000000000000000000000";
+      #workspaces button {
+        font-size: 12px;
+        color: #333333;
+        background: transparent;
+        border: none;
+        padding: 0 6px;
+        margin: 0 6px 0 0;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: 0;
+      }
+
+      #workspaces button.active {
+        background: transparent;
+        color: #333333;
+        border-bottom: 2px solid #333333;
+        padding-bottom: 0;
+      }
+
+      #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
+        background: transparent;
+        color: #000000;
+        padding: 0 4px;
+        margin-right: 20px;
+      }
+
+      #clock {
+        font-weight: 500;
+        font-size: 13px;
+      }
+
+      #custom-countdown {
+        font-size: 12px;
+      }
+    '';
   };
 }
