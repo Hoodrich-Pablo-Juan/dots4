@@ -26,6 +26,7 @@
     brightnessctl
     pavucontrol
     hyprpicker
+    fastfetch
 
     # Fonts
     nerd-fonts.jetbrains-mono
