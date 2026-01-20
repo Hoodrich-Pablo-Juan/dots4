@@ -11,16 +11,16 @@
   boot = {
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
-    
+
     # NVIDIA kernel parameters
     kernelParams = [ 
       "nvidia-drm.modeset=1"
       "nvidia-drm.fbdev=1"
     ];
-    
+
     # Blacklist nouveau to prevent conflicts
     blacklistedKernelModules = [ "nouveau" ];
-    
+
     # Load NVIDIA modules early
     initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
   };
@@ -42,7 +42,7 @@
   # LOCALIZATION
   # ============================================
   time.timeZone = "Europe/Bucharest";
-  
+
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "ro_RO.UTF-8";
@@ -60,31 +60,19 @@
   # NVIDIA CONFIGURATION FOR GTX 1650M
   # ============================================
   services.xserver.videoDrivers = [ "nvidia" ];
-  
+
   hardware.nvidia = {
-    # Required for Wayland
     modesetting.enable = true;
-    
-    # Power management (important for laptops)
     powerManagement.enable = true;
     powerManagement.finegrained = false;
-    
-    # Use open-source driver (supports 1650M/Turing+)
     open = true;
-    
-    # NVIDIA settings GUI
     nvidiaSettings = true;
-    
-    # Stable driver
     package = config.boot.kernelPackages.nvidiaPackages.stable;
-    
-    # PRIME configuration for hybrid graphics (Intel + NVIDIA)
+
     prime = {
-      # Get your actual bus IDs by running: lspci | grep -E "VGA|3D"
       intelBusId = "PCI:0:2:0";
       nvidiaBusId = "PCI:1:0:0";
       
-      # OFFLOAD mode: Use NVIDIA only when needed (better battery)
       offload = {
         enable = true;
         enableOffloadCmd = true;
@@ -92,7 +80,6 @@
     };
   };
 
-  # OpenGL/Graphics support
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -120,14 +107,11 @@
   services.blueman.enable = true;
 
   # ============================================
-  # DISPLAY & DESKTOP
+  # DISPLAY & DESKTOP - REMOVED GNOME
   # ============================================
   services.xserver = {
     enable = true;
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
-    
-    # Colemak DH layout
+    # Remove GDM and GNOME - use Hyprland only
     xkb = {
       layout = "us";
       variant = "colemak_dh";
@@ -151,21 +135,16 @@
   # ENVIRONMENT VARIABLES (NVIDIA + Wayland)
   # ============================================
   environment.sessionVariables = {
-    # NVIDIA specific
     LIBVA_DRIVER_NAME = "nvidia";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     WLR_NO_HARDWARE_CURSORS = "1";
-    
-    # Wayland
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     GDK_BACKEND = "wayland,x11";
     QT_QPA_PLATFORM = "wayland;xcb";
     XCURSOR_SIZE = "24";
     HYPRCURSOR_SIZE = "24";
-    
-    # Electron apps on Wayland
     NIXOS_OZONE_WL = "1";
   };
 
@@ -217,14 +196,14 @@
     unzip
     pciutils
     usbutils
-    
+
     # Hyprland ecosystem
     hyprland
     hyprpaper
     hyprpicker
-    hyprsunset  # Warm color temperature filter
+    hyprsunset
     xdg-desktop-portal-hyprland
-    
+
     # Wayland tools
     waybar
     wofi
@@ -233,28 +212,28 @@
     slurp
     wf-recorder
     wl-clipboard
-    
+
     # Terminals
     alacritty
     kitty
-    
+
     # Editor
     helix
-    
+
     # File manager
     nautilus
-    
+
     # Media
-    mpv
-    
+    impala
+
     # System monitors
     htop
     btop
     neofetch
-    
+
     # Audio control
     pavucontrol
-    
+
     # System tools
     brightnessctl
     pamixer
@@ -262,10 +241,19 @@
     polkit_gnome
     networkmanagerapplet
     
+    # WiFi TUI
+    impala
+
     # Notifications
     dunst
     libnotify
+
+    # Cursor themes
+    bibata-cursors
     
+    # GTK themes for light mode
+    adwaita-icon-theme
+
     # Fonts
     jetbrains-mono
     font-awesome
@@ -273,8 +261,8 @@
     montserrat
     noto-fonts-color-emoji
     nerd-fonts.jetbrains-mono
-    
-    # Build tools (for hyprpm and hy3 plugin)
+
+    # Build tools
     cmake
     meson
     ninja
@@ -282,13 +270,13 @@
     gcc
     gnumake
     cpio
-    
+
     # NVIDIA tools
     nvtopPackages.full
     mesa-demos
     vulkan-tools
-    
-    # Additional Wayland support
+
+    # Wayland support
     qt5.qtwayland
     qt6.qtwayland
   ];
