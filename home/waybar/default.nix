@@ -23,19 +23,21 @@
         ];
       
         "hyprland/workspaces" = {
-          format = "{name}";
-          active-only = false;
-          show-empty = false;
-          all-outputs = false;
-          sort-by-number = true;
+          format = "{icon}";
+          format-active = " {icon} ";
           on-click = "activate";
-          on-scroll-up = "hyprctl dispatch workspace e-1";
-          on-scroll-down = "hyprctl dispatch workspace e+1";
+          persistent-workspaces = {
+            "1" = [];
+            "2" = [];
+            "3" = [];
+            "4" = [];
+          };
         };
       
         clock = {
-          tooltip = false;
-          format = "{:%a %e, %H:%M}";
+          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          interval = 60;
+          format = "{:%H:%M}";
         };
       
         network = {
@@ -65,13 +67,10 @@
         };
       
         pulseaudio = {
-          tooltip = false;
-          scroll-step = 2;
-          format = "{icon}  {volume}%";
-          format-muted = "  {volume}%";
+          format = "{icon} {volume}%";
+          format-muted = "󰝟";
           format-icons = {
-            default = [ "" "" ];
-            headphones = "";
+            default = [ "󰕿" "󰖀" "󰕾" ];
           };
           on-click = "pavucontrol";
         };
@@ -108,7 +107,7 @@
 
       window#waybar { background: transparent; }
 
-      #workspaces, #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
+      #workspaces, #group-status, #network, #custom-bluetooth, #pulseaudio, #clock, #custom-countdown {
         margin: 0;
         padding-top: 0;
         padding-bottom: 0;
