@@ -6,6 +6,7 @@
     ./waybar
     ./packages.nix
     ./wofi.nix
+    ./firefox.nix
   ];
 
   home.username = "bryllm";
