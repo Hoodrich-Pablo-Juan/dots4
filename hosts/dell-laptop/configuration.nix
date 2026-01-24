@@ -18,6 +18,9 @@
       "nvidia-drm.fbdev=1"
     ];
 
+    # Kernel modules for Waydroid
+    kernelModules = [ "binder_linux" "ashmem_linux" ];
+
     # Blacklist nouveau to prevent conflicts
     blacklistedKernelModules = [ "nouveau" ];
 
@@ -30,12 +33,25 @@
   # ============================================
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Enable auto-optimization and garbage collection
+  nix.settings.auto-optimise-store = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
+
   # ============================================
   # NETWORKING
   # ============================================
   networking = {
     hostName = "nixos";
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      wifi.backend = "wpa_supplicant";
+    };
+    # Disable iwd to prevent conflicts
+    wireless.iwd.enable = false;
   };
 
   # ============================================
@@ -107,11 +123,10 @@
   services.blueman.enable = true;
 
   # ============================================
-  # DISPLAY & DESKTOP - REMOVED GNOME
+  # DISPLAY & DESKTOP - HYPRLAND
   # ============================================
   services.xserver = {
     enable = true;
-    # Remove GDM and GNOME - use Hyprland only
     xkb = {
       layout = "us";
       variant = "colemak_dh";
@@ -127,9 +142,17 @@
   # XDG Portal for Hyprland
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+    extraPortals = [ 
+      pkgs.xdg-desktop-portal-hyprland 
+      pkgs.xdg-desktop-portal-gtk
+    ];
     config.common.default = "*";
   };
+
+  # ============================================
+  # WAYDROID (Android Emulation)
+  # ============================================
+  virtualisation.waydroid.enable = true;
 
   # ============================================
   # ENVIRONMENT VARIABLES (NVIDIA + Wayland)
@@ -166,6 +189,9 @@
     };
   };
 
+  # Enable dbus
+  services.dbus.enable = true;
+
   # ============================================
   # PRINTING
   # ============================================
@@ -177,7 +203,13 @@
   users.users.bryllm = {
     isNormalUser = true;
     description = "bryllm";
-    extraGroups = [ "networkmanager" "wheel" "video" "audio" ];
+    extraGroups = [ 
+      "networkmanager" 
+      "wheel" 
+      "video" 
+      "audio" 
+      "input"
+    ];
     shell = pkgs.bash;
   };
 
@@ -203,6 +235,7 @@
     hyprpicker
     hyprsunset
     xdg-desktop-portal-hyprland
+    xdg-desktop-portal-gtk
 
     # Wayland tools
     waybar
@@ -240,9 +273,6 @@
     playerctl
     polkit_gnome
     networkmanagerapplet
-    
-    # WiFi TUI
-    impala
 
     # Notifications
     dunst
@@ -253,6 +283,7 @@
     
     # GTK themes for light mode
     adwaita-icon-theme
+    gnome-themes-extra
 
     # Fonts
     jetbrains-mono
@@ -279,6 +310,18 @@
     # Wayland support
     qt5.qtwayland
     qt6.qtwayland
+
+    # Waydroid dependencies
+    lxc
+
+    # Communication
+    beeper
+
+    # File sharing
+    localsend
+
+    # Waydroid (Android emulation)
+    waydroid
   ];
 
   # ============================================
@@ -298,6 +341,7 @@
   # ============================================
   programs.firefox.enable = true;
   programs.dconf.enable = true;
+  programs.bash.enableCompletion = true;
 
   # ============================================
   # MISC
