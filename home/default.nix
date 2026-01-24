@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, zen-browser, firefox-addons, ... }:
 
 {
   imports = [
@@ -6,7 +6,8 @@
     ./waybar
     ./packages.nix
     ./wofi.nix
-    ./firefox.nix
+    zen-browser.homeManagerModules.default
+    ./zen.nix
   ];
 
   home.username = "bryllm";
