@@ -14,11 +14,16 @@
         output = "DP-1";
       
         modules-left = [ "hyprland/workspaces" ];
-        modules-center = [ "clock" ];
+        modules-center = [ "custom/dynamic_pill" "custom/countdown" ];
         modules-right = [ 
           "network" 
           "custom/bluetooth" 
-          "pulseaudio"
+          "uptime"
+          "custom/weather"
+          "custom/ss"
+          "custom/cycle_wall"
+          "custom/expand"
+          "clock"
         ];
       
         "hyprland/workspaces" = {
@@ -44,7 +49,7 @@
           format-ethernet = "󰈀";
           format-disconnected = "󰖪";
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
-          on-click = "iwgtk";
+          on-click = "nm-connection-editor";
         };
       
         "custom/bluetooth" = {
@@ -64,14 +69,56 @@
           on-click = "blueman-manager";
           interval = 5;
         };
-      
-        pulseaudio = {
-          format = "{icon} {volume}%";
-          format-muted = "󰝟";
-          format-icons = {
-            default = [ "󰕿" "󰖀" "󰕾" ];
-          };
-          on-click = "pavucontrol";
+
+        "custom/dynamic_pill" = {
+          return-type = "json";
+          exec = "echo '{\"text\": \"\"}'";
+          escape = true;
+        };
+
+        "custom/ss" = {
+          format = "";
+          on-click = "grim -g \"$(slurp)\" - | wl-copy";
+        };
+
+        "custom/cycle_wall" = {
+          format = "";
+          on-click = "swaybg -i ~/.config/wallpapers/wallpaper.jpg -m fill";
+        };
+
+        "custom/expand" = {
+          on-click = "echo 'expand'";
+          format = "";
+        };
+
+        uptime = {
+          format = "󰚰 {h}h {m}m";
+          tooltip = false;
+        };
+
+        "custom/countdown" = {
+          return-type = "json";
+          format = "{}";
+          exec = ''
+            now=$(date +%s)
+            target=$(date -d '22:00' +%s)
+            if [ "$now" -gt "$target" ]; then
+              target=$(date -d 'tomorrow 22:00' +%s)
+            fi
+            remaining=$((target - now))
+            hours=$((remaining / 3600))
+            minutes=$(((remaining % 3600) / 60))
+            printf '{"text": "󰔟 %dh %dm"}' "$hours" "$minutes"
+          '';
+          interval = 60;
+          tooltip = false;
+        };
+
+        "custom/weather" = {
+          format = "{}";
+          tooltip = true;
+          exec = "curl -s 'wttr.in?format=%C+%t'";
+          interval = 3600;
         };
       };
     };
@@ -104,6 +151,7 @@
       #custom-weather,
       #mpd,
       #uptime,
+      #custom-countdown,
       #pulseaudio {
           padding: 0 10px;
           border-radius: 15px;
@@ -117,20 +165,13 @@
           box-shadow: none;
       }
 
-      /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS AND CLOCK --- */
-      #network, #custom-bluetooth, #clock {
+      /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS --- */
+      #network, #custom-bluetooth {
           background: transparent;
           padding: 0 5px;
           margin-top: 10px;
           margin-bottom: 10px;
           margin-right: 0px;
-      }
-
-      /* Clock specific styling */
-      #clock {
-          color: #111827;
-          font-size: 14px;
-          padding: 0 10px;
       }
 
       /* --- UPDATED ICON COLORS --- */
@@ -181,15 +222,52 @@
           100% { background-position: 400% 200%; }
       }
 
-      #pulseaudio { 
+      /* Other module styles */
+      #custom-ss { 
+          background: #f3f4f6; 
+          padding: 5px 20px; 
+      }
+      
+      #custom-cycle_wall { 
+          background: linear-gradient(45deg, #111827 0%, #374151 25%, #6b7280 50%, #374151 75%, #111827 100%); 
+          color: #ffffff; 
+          background-size: 500% 500%; 
+          animation: gradient 7s linear infinite; 
+      }
+      
+      #custom-weather {
+          background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+      }
+      
+      #uptime { 
           background-color: #e5e7eb; 
           color: #1f2937; 
+      }
+      
+      #custom-countdown { 
+          background-color: #d1d5db; 
+          color: #1f2937; 
+      }
+
+      #clock {
+          background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+          background-size: 200% 200%;
+          animation: gradient 10s ease infinite;
           margin-right: 25px;
+          color: #111827;
+          font-size: 14px;
+          padding: 5px 21px 5px 20px;
       }
 
       #tray { 
           background-color: #f3f4f6; 
           padding: 5px 10px; 
+      }
+
+      @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
       }
     '';
   };
