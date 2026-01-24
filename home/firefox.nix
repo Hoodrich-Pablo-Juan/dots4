@@ -48,6 +48,9 @@
         "privacy.trackingprotection.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
         
+        # Enable userChrome.css
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+        
         # UI preferences
         "browser.uiCustomization.state" = builtins.toJSON {
           placements = {
@@ -71,31 +74,37 @@
         # Smooth scrolling
         "general.smoothScroll" = true;
       };
-
-      userChrome = ''
-        /* Parfait theme will be applied here */
-        /* The userChrome.css from Parfait should be pasted here */
-        /* Visit: https://github.com/reizumii/parfait/blob/main/chrome/userChrome.css */
-      '';
-
-      userContent = ''
-        /* Parfait theme userContent */
-        /* The userContent.css from Parfait should be pasted here */
-        /* Visit: https://github.com/reizumii/parfait/blob/main/chrome/userContent.css */
-      '';
     };
   };
 
-  # Download Parfait theme files
-  home.file.".mozilla/firefox/default/chrome/userChrome.css".source = 
-    pkgs.fetchurl {
-      url = "https://raw.githubusercontent.com/reizumii/parfait/main/chrome/userChrome.css";
-      sha256 = "0000000000000000000000000000000000000000000000000000"; # You'll need to update this
-    };
-
-  home.file.".mozilla/firefox/default/chrome/userContent.css".source = 
-    pkgs.fetchurl {
-      url = "https://raw.githubusercontent.com/reizumii/parfait/main/chrome/userContent.css";
-      sha256 = "0000000000000000000000000000000000000000000000000000"; # You'll need to update this
-    };
+  # Create a script to download Parfait theme
+  home.file.".local/bin/install-parfait-theme.sh" = {
+    text = ''
+      #!/usr/bin/env bash
+      
+      FIREFOX_PROFILE="$HOME/.mozilla/firefox/default"
+      CHROME_DIR="$FIREFOX_PROFILE/chrome"
+      
+      echo "Installing Parfait Firefox theme..."
+      
+      # Create chrome directory if it doesn't exist
+      mkdir -p "$CHROME_DIR"
+      
+      # Download userChrome.css
+      echo "Downloading userChrome.css..."
+      curl -sL "https://raw.githubusercontent.com/reizumii/parfait/main/chrome/userChrome.css" \
+        -o "$CHROME_DIR/userChrome.css"
+      
+      # Download userContent.css
+      echo "Downloading userContent.css..."
+      curl -sL "https://raw.githubusercontent.com/reizumii/parfait/main/chrome/userContent.css" \
+        -o "$CHROME_DIR/userContent.css"
+      
+      echo "Parfait theme installed successfully!"
+      echo "Please restart Firefox for changes to take effect."
+      echo ""
+      echo "Note: The theme is already enabled via about:config."
+    '';
+    executable = true;
+  };
 }
