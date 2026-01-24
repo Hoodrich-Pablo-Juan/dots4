@@ -6,7 +6,7 @@
     ./waybar
     ./packages.nix
     ./wofi.nix
-    zen-browser.homeManagerModules.default
+    zen-browser.homeManagerModules.twilight  # Changed from .default
     ./zen.nix
   ];
 
