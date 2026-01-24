@@ -5,8 +5,7 @@
     # Terminal
     alacritty
     
-    # Browser
-    firefox
+    # Browser (configured in firefox.nix)
     
     # Launcher
     wofi
@@ -37,14 +36,17 @@
     # File manager
     nautilus
     
-    # Network management
-    iwgtk  # GTK-based WiFi manager
+    # Network management - Using NetworkManager instead of iwd
+    networkmanagerapplet
     
     # Communication
     beeper
     
     # File sharing
     localsend
+    
+    # Android emulation
+    waydroid
   ];
   
   fonts.fontconfig.enable = true;
@@ -61,6 +63,29 @@
           wf-recorder -f "$HOME/Videos/Recordings/rec_$(date +%Y%m%d_%H%M%S).mp4" &
           notify-send "Screen Recording" "Started. Press Ctrl+P again to stop."
       fi
+    '';
+    executable = true;
+  };
+  
+  # Waydroid initialization script
+  home.file.".config/hypr/scripts/waydroid-setup.sh" = {
+    text = ''
+      #!/bin/bash
+      
+      # Initialize Waydroid with LineageOS if not already initialized
+      if [ ! -d "$HOME/.local/share/waydroid" ]; then
+          echo "Initializing Waydroid with LineageOS..."
+          waydroid init -s GAPPS -f
+      fi
+      
+      # Start Waydroid session
+      waydroid session start &
+      
+      # Wait for Waydroid to be ready
+      sleep 5
+      
+      # Show Waydroid
+      waydroid show-full-ui
     '';
     executable = true;
   };
