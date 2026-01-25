@@ -29,4 +29,4 @@ with pkgs;
 
   # Fonts
   nerd-fonts-complete
-];
+]
