@@ -28,7 +28,7 @@
       name = "default";
       isDefault = true;
 
-      # ✅ declarative extension syntax
+      # Declarative extensions
       extensions.packages = with firefox-addons.packages.${pkgs.system}; [
         leechblock-ng
         vimium-c
