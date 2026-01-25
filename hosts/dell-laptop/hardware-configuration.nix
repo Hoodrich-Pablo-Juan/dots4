@@ -24,11 +24,7 @@
       options = [ "fmask=0077" "dmask=0077" ];
     };
 
-  # Only ONE of these - remove any duplicates
-  fileSystems."/var/lib/waydroid/rootfs" =
-    { device = "overlay";
-      fsType = "overlay";
-    };
+
 
   swapDevices = [ ];
 
