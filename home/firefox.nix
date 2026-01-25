@@ -1,17 +1,22 @@
-{ config, pkgs, zen-browser, firefox-addons, ... }:
+{ config, pkgs, firefox-addons, ... }:
 
 {
-  programs.zen-browser = {
+  # Install Zen Browser
+  home.packages = [
+    pkgs.zen-browser
+  ];
+
+  programs.firefox = {
     enable = true;
-    
+
     policies = {
-      # Disable telemetry and tracking
+      # Privacy / hardening
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
       DisablePocket = true;
-      DisplayBookmarksToolbar = "never";
       DisableAppUpdate = true;
-      
+      DisplayBookmarksToolbar = "never";
+
       EnableTrackingProtection = {
         Value = true;
         Locked = true;
@@ -19,29 +24,29 @@
         Fingerprinting = true;
       };
     };
-    
+
     profiles.default = {
       id = 0;
       name = "default";
       isDefault = true;
 
-      # Install extensions declaratively
+      # Declarative extensions
       extensions = with firefox-addons.packages.${pkgs.system}; [
         leechblock-ng
         vimium-c
         stylus
       ];
-      
+
       settings = {
-        # Privacy & Security
+        # Privacy
         "privacy.donottrackheader.enabled" = true;
         "privacy.trackingprotection.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
-        
-        # Enable userChrome.css
+
+        # Allow userChrome.css if you ever want it later
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        
-        # Disable telemetry completely
+
+        # Telemetry = dead
         "browser.newtabpage.activity-stream.feeds.telemetry" = false;
         "browser.ping-centre.telemetry" = false;
         "browser.tabs.crashReporting.sendReport" = false;
@@ -50,27 +55,12 @@
         "toolkit.telemetry.enabled" = false;
         "toolkit.telemetry.unified" = false;
         "toolkit.telemetry.archive.enabled" = false;
-        
-        # New tab page
+
+        # Startup / UX
         "browser.newtabpage.enabled" = false;
-        "browser.startup.page" = 3; # Restore previous session
-        
-        # Smooth scrolling
+        "browser.startup.page" = 3;
         "general.smoothScroll" = true;
       };
-      
-      # Parfait theme - paste the CSS content from GitHub here
-      userChrome = ''
-        /* Parfait Theme for Zen Browser */
-        /* Paste the full content from: */
-        /* https://raw.githubusercontent.com/reizumii/parfait/main/chrome/userChrome.css */
-      '';
-
-      userContent = ''
-        /* Parfait Theme userContent */
-        /* Paste the full content from: */
-        /* https://raw.githubusercontent.com/reizumii/parfait/main/chrome/userContent.css */
-      '';
     };
   };
 }
