@@ -17,6 +17,7 @@
 
   programs.bash = {
     enable = true;
+    completion.enable = true; # updated from deprecated enableCompletion
     profileExtra = ''
       # Hyprland auto-start on TTY1
       if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
@@ -61,6 +62,10 @@
   home.file.".config/wallpapers/wallpaper.jpg".source =
     ../wallpapers/eink.jpg;
 
-  # ✅ Zen Browser is included only via home.packages
-  # (remove any programs.zen-browser block)
+  # ✅ Zen Browser — only include zen-twilight to avoid conflicts
+  home.packages = with pkgs; [
+    zen-browser
+    zen-twilight
+    # zen-beta removed to prevent bin/zen collision
+  ];
 }
