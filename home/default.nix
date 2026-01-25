@@ -64,8 +64,7 @@
 
 home.packages = with pkgs; [
   zen-browser
-  pkgs.zen-twilight  # fully qualified
-  # zen-beta removed
+
 ];
 
 }
