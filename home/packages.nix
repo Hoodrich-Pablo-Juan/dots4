@@ -29,7 +29,7 @@
 
   fonts.fontconfig.enable = true;
 
-  # Hyprland scripts
+  # Scripts for Hyprland & Waydroid
   home.file.".config/hypr/scripts/wf-toggle-recorder.sh" = {
     executable = true;
     text = ''
