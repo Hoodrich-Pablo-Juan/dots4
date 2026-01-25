@@ -17,7 +17,7 @@
 
   programs.bash = {
     enable = true;
-    completion.enable = true; # updated from deprecated enableCompletion
+    enableCompletion = true; # matches your current HM version
     profileExtra = ''
       # Hyprland auto-start on TTY1
       if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
@@ -66,6 +66,6 @@
   home.packages = with pkgs; [
     zen-browser
     zen-twilight
-    # zen-beta removed to prevent bin/zen collision
+    # zen-beta removed
   ];
 }
