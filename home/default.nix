@@ -1,14 +1,6 @@
-{ config, pkgs, zen-browser, firefox-addons, ... }:
+{ config, pkgs, zen-browser, firefox-addons, packages, ... }:
 
 {
-  imports = [
-    ./packages.nix
-    ./firefox.nix
-    ./hyprland.nix
-    ./wofi.nix
-    ./waybar
-  ];
-
   home.username = "bryllm";
   home.homeDirectory = "/home/bryllm";
   home.stateVersion = "25.11";
@@ -17,7 +9,7 @@
 
   programs.bash = {
     enable = true;
-    enableCompletion = true; # matches your current HM version
+    enableCompletion = true; # works with your HM version
     profileExtra = ''
       # Hyprland auto-start on TTY1
       if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
@@ -62,8 +54,6 @@
   home.file.".config/wallpapers/wallpaper.jpg".source =
     ../wallpapers/eink.jpg;
 
-  # ✅ Zen Browser only, avoid zen-beta or twilight collision
-  home.packages = with pkgs; [
-    zen-browser
-  ];
+  # Packages from packages.nix
+  home.packages = packages;
 }
