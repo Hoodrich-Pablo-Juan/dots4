@@ -2,11 +2,11 @@
 
 {
   imports = [
-    ./hyprland.nix
-    ./waybar
     ./packages.nix
+    ./firefox.nix
+    ./hyprland.nix
     ./wofi.nix
-    ./zen.nix
+    ./waybar
   ];
 
   home.username = "bryllm";
