@@ -6,7 +6,6 @@
     ./waybar
     ./packages.nix
     ./wofi.nix
-    zen-browser.homeManagerModules.twilight  # Changed from .default
     ./zen.nix
   ];
 
@@ -26,7 +25,6 @@
     '';
   };
 
-  # Kitty terminal configuration with transparency
   programs.kitty = {
     enable = true;
     settings = {
@@ -34,64 +32,41 @@
       background_blur = 64;
       font_family = "JetBrainsMono Nerd Font";
       font_size = "11.0";
-      
       window_padding_width = 16;
-      
-      # E-ink theme colors (matching ghostty config)
+
       foreground = "#333333";
       background = "#CCCCCC";
       selection_foreground = "#CCCCCC";
       selection_background = "#333333";
-      
-      # Cursor colors
       cursor = "#333333";
       cursor_text_color = "#CCCCCC";
-      
-      # Black
+
       color0 = "#333333";
       color8 = "#474747";
-      
-      # Red
       color1 = "#474747";
       color9 = "#5A5A5A";
-      
-      # Green
       color2 = "#474747";
       color10 = "#5A5A5A";
-      
-      # Yellow
       color3 = "#474747";
       color11 = "#5A5A5A";
-      
-      # Blue
       color4 = "#474747";
       color12 = "#5A5A5A";
-      
-      # Magenta
       color5 = "#474747";
       color13 = "#5A5A5A";
-      
-      # Cyan
       color6 = "#474747";
       color14 = "#5A5A5A";
-      
-      # White
       color7 = "#AFAFAF";
       color15 = "#FFFFFF";
     };
   };
 
-  # Alacritty terminal configuration (backup)
   programs.alacritty = {
     enable = true;
     settings = {
       window = {
         opacity = 0.78;
         blur = true;
-        padding = {
-          x = 16;
-          y = 16;
-        };
+        padding = { x = 16; y = 16; };
         decorations = "Full";
       };
       font = {
@@ -130,7 +105,6 @@
     };
   };
 
-  # GTK configuration for light theme
   gtk = {
     enable = true;
     theme = {
@@ -146,22 +120,16 @@
       package = pkgs.bibata-cursors;
       size = 24;
     };
-    gtk3.extraConfig = {
-      gtk-application-prefer-dark-theme = false;
-    };
-    gtk4.extraConfig = {
-      gtk-application-prefer-dark-theme = false;
-    };
+    gtk3.extraConfig.gtk-application-prefer-dark-theme = false;
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = false;
   };
 
-  # Qt configuration for light theme
   qt = {
     enable = true;
     platformTheme.name = "gtk3";
     style.name = "adwaita";
   };
 
-  # Cursor theme for Wayland
   home.pointerCursor = {
     name = "Bibata-Modern-Classic";
     package = pkgs.bibata-cursors;
@@ -170,7 +138,6 @@
     x11.enable = true;
   };
 
-  # Dunst notification daemon configuration
   services.dunst = {
     enable = true;
     settings = {
@@ -201,6 +168,6 @@
     };
   };
 
-  # Copy wallpaper from repo to home directory
-  home.file.".config/wallpapers/wallpaper.jpg".source = ../wallpapers/eink.jpg;
+  home.file.".config/wallpapers/wallpaper.jpg".source =
+    ../wallpapers/eink.jpg;
 }
