@@ -62,9 +62,8 @@
   home.file.".config/wallpapers/wallpaper.jpg".source =
     ../wallpapers/eink.jpg;
 
-home.packages = with pkgs; [
-  zen-browser
-
-];
-
+  # ✅ Zen Browser only, avoid zen-beta or twilight collision
+  home.packages = with pkgs; [
+    zen-browser
+  ];
 }
