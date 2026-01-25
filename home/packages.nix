@@ -1,63 +1,32 @@
-{ config, pkgs, zen-browser, ... }:
+{ config, pkgs, ... }:
 
-{
-  home.packages = with pkgs; [
-    alacritty
-    wofi
-    waybar
-    swaybg
-    hyprsunset
-    grim
-    slurp
-    wf-recorder
-    wl-clipboard
-    brightnessctl
-    pavucontrol
-    hyprpicker
-    nerd-fonts.jetbrains-mono
-    htop
-    btop
-    nautilus
-    networkmanagerapplet
-    beeper
-    localsend
-    waydroid
+with pkgs;
 
-    # ✅ Zen Browser (Twilight build only)
-    zen-browser.packages.${pkgs.system}.twilight
-  ];
+# ✅ Only include packages you actually need
+[
+  # Terminal emulators
+  kitty
+  alacritty
 
-  fonts.fontconfig.enable = true;
+  # Editors / tools
+  vim
+  neovim
+  git
+  curl
+  wget
+  htop
+  ripgrep
 
-  # Scripts for Hyprland & Waydroid
-  home.file.".config/hypr/scripts/wf-toggle-recorder.sh" = {
-    executable = true;
-    text = ''
-      #!/bin/bash
-      if pgrep -x "wf-recorder" > /dev/null; then
-        pkill -INT wf-recorder
-        notify-send "Screen Recording" "Stopped."
-      else
-        mkdir -p "$HOME/Videos/Recordings"
-        wf-recorder -f "$HOME/Videos/Recordings/rec_$(date +%Y%m%d_%H%M%S).mp4" &
-        notify-send "Screen Recording" "Started. Press Ctrl+P again to stop."
-      fi
-    '';
-  };
+  # Utilities
+  fd
+  bat
+  exa
+  tree
 
-  home.file.".config/hypr/scripts/waydroid-setup.sh" = {
-    executable = true;
-    text = ''
-      #!/bin/bash
-      if [ ! -d "$HOME/.local/share/waydroid" ]; then
-        waydroid init -s GAPPS -f
-      fi
+  # Browsers
+  # Only zen-browser; do NOT include zen-twilight or zen-beta here
+  zen-browser
 
-      waydroid session start &
-      sleep 5
-      waydroid show-full-ui
-    '';
-  };
-
-  home.file.".config/wallpapers/.keep".text = "";
-}
+  # Fonts
+  nerd-fonts-complete
+];
