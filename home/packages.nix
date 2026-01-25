@@ -1,30 +1,28 @@
-{ pkgs, ... }:
-
-with pkgs;
+{ pkgs, zen-browser, ... }:
 
 [
   # Terminal emulators
-  kitty
-  alacritty
+  pkgs.kitty
+  pkgs.alacritty
 
   # Editors / tools
-  vim
-  neovim
-  git
-  curl
-  wget
-  htop
-  ripgrep
+  pkgs.vim
+  pkgs.neovim
+  pkgs.git
+  pkgs.curl
+  pkgs.wget
+  pkgs.htop
+  pkgs.ripgrep
 
   # Utilities
-  fd
-  bat
-  exa
-  tree
+  pkgs.fd
+  pkgs.bat
+  pkgs.exa
+  pkgs.tree
 
-  # Browser
+  # Browser (from flake input)
   zen-browser
 
   # Fonts
-  nerd-fonts-complete
+  pkgs.nerd-fonts-complete
 ]
