@@ -20,24 +20,39 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, zen-browser, firefox-addons, ... }: {
-    nixosConfigurations = {
-      dell-laptop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit zen-browser firefox-addons; };
-        modules = [
-          ./hosts/dell-laptop/configuration.nix
-          
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.bryllm = import ./home;
-            home-manager.extraSpecialArgs = { inherit zen-browser firefox-addons; };
-          }
-        ];
+  outputs = { self, nixpkgs, home-manager, zen-browser, firefox-addons, ... }:
+    let
+      # Import packages.nix as a list
+      homePackages = import ./home/packages.nix { inherit pkgs; };
+    in
+    {
+      nixosConfigurations = {
+        dell-laptop = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+
+          # Make zen-browser and firefox-addons available to modules
+          specialArgs = { inherit zen-browser firefox-addons; };
+
+          modules = [
+            ./hosts/dell-laptop/configuration.nix
+
+            # Home Manager module
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "backup";
+
+              # Import default.nix and pass packages
+              home-manager.users.bryllm = import ./home/default.nix {
+                inherit pkgs zen-browser firefox-addons;
+                packages = homePackages;
+              };
+
+              home-manager.extraSpecialArgs = { inherit zen-browser firefox-addons; };
+            }
+          ];
+        };
       };
     };
-  };
 }
