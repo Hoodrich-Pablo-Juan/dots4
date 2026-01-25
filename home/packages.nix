@@ -23,12 +23,13 @@
     localsend
     waydroid
 
-    # ✅ Zen Browser (Twilight build)
+    # ✅ Zen Browser (Twilight build only)
     zen-browser.packages.${pkgs.system}.twilight
   ];
 
   fonts.fontconfig.enable = true;
 
+  # Hyprland scripts
   home.file.".config/hypr/scripts/wf-toggle-recorder.sh" = {
     executable = true;
     text = ''
