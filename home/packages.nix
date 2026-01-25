@@ -1,8 +1,7 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 with pkgs;
 
-# ✅ Only include packages you actually need
 [
   # Terminal emulators
   kitty
@@ -23,8 +22,7 @@ with pkgs;
   exa
   tree
 
-  # Browsers
-  # Only zen-browser; do NOT include zen-twilight or zen-beta here
+  # Browser
   zen-browser
 
   # Fonts
