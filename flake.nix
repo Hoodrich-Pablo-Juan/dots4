@@ -40,13 +40,16 @@
           modules = [
             ./hosts/dell-laptop/configuration.nix
 
+            # Home Manager module
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
 
+              # Import home configuration with config={}
               home-manager.users.bryllm = import ./home/default.nix {
+                config = {};
                 inherit pkgs zen-browser firefox-addons;
                 packages = homePackages;
               };
