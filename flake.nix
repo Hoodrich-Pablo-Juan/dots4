@@ -22,15 +22,17 @@
 
   outputs = { self, nixpkgs, home-manager, zen-browser, firefox-addons, ... }:
     let
-      # Import packages.nix as a list
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+
+      # Import packages.nix as a simple list
       homePackages = import ./home/packages.nix { inherit pkgs; };
     in
     {
       nixosConfigurations = {
-        dell-laptop = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+        dell-laptop = pkgs.lib.nixosSystem {
+          system = system;
 
-          # Make zen-browser and firefox-addons available to modules
           specialArgs = { inherit zen-browser firefox-addons; };
 
           modules = [
@@ -43,7 +45,7 @@
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
 
-              # Import default.nix and pass packages
+              # Import your home configuration and pass packages
               home-manager.users.bryllm = import ./home/default.nix {
                 inherit pkgs zen-browser firefox-addons;
                 packages = homePackages;
