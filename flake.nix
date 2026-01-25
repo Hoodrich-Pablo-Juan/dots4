@@ -24,12 +24,15 @@
     let
       system = "x86_64-linux";
 
+      # Packages for Home Manager
+      pkgs = nixpkgs.legacyPackages.${system};
+
       # Import packages.nix as a simple list
-      homePackages = import ./home/packages.nix { pkgs = nixpkgs.${system}; };
+      homePackages = import ./home/packages.nix { inherit pkgs; };
     in
     {
       nixosConfigurations = {
-        dell-laptop = nixpkgs.${system}.lib.nixosSystem {
+        dell-laptop = nixpkgs.lib.nixosSystem {
           system = system;
 
           specialArgs = { inherit zen-browser firefox-addons; };
@@ -37,17 +40,14 @@
           modules = [
             ./hosts/dell-laptop/configuration.nix
 
-            # Home Manager module
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
 
-              # Import home configuration and pass packages
               home-manager.users.bryllm = import ./home/default.nix {
-                pkgs = nixpkgs.${system};
-                inherit zen-browser firefox-addons;
+                inherit pkgs zen-browser firefox-addons;
                 packages = homePackages;
               };
 
