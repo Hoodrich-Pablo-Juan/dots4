@@ -1,16 +1,14 @@
-{ config, pkgs, firefox-addons, ... }:
+{ config, pkgs, firefox-addons, zen-browser, ... }:
 
 {
-  # Install Zen Browser
   home.packages = [
-    pkgs.zen-browser
+    zen-browser.packages.${pkgs.system}.default
   ];
 
   programs.firefox = {
     enable = true;
 
     policies = {
-      # Privacy / hardening
       DisableTelemetry = true;
       DisableFirefoxStudies = true;
       DisablePocket = true;
@@ -30,7 +28,6 @@
       name = "default";
       isDefault = true;
 
-      # Declarative extensions
       extensions = with firefox-addons.packages.${pkgs.system}; [
         leechblock-ng
         vimium-c
@@ -38,15 +35,12 @@
       ];
 
       settings = {
-        # Privacy
         "privacy.donottrackheader.enabled" = true;
         "privacy.trackingprotection.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
 
-        # Allow userChrome.css if you ever want it later
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
 
-        # Telemetry = dead
         "browser.newtabpage.activity-stream.feeds.telemetry" = false;
         "browser.ping-centre.telemetry" = false;
         "browser.tabs.crashReporting.sendReport" = false;
@@ -56,7 +50,6 @@
         "toolkit.telemetry.unified" = false;
         "toolkit.telemetry.archive.enabled" = false;
 
-        # Startup / UX
         "browser.newtabpage.enabled" = false;
         "browser.startup.page" = 3;
         "general.smoothScroll" = true;
