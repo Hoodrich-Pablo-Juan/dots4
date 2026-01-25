@@ -28,7 +28,8 @@
       name = "default";
       isDefault = true;
 
-      extensions = with firefox-addons.packages.${pkgs.system}; [
+      # ✅ Updated declarative syntax
+      extensions.packages = with firefox-addons.packages.${pkgs.system}; [
         leechblock-ng
         vimium-c
         stylus
