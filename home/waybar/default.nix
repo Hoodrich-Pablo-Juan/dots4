@@ -49,7 +49,7 @@
           format-ethernet = "󰈀";
           format-disconnected = "󰖪";
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
-          on-click = "nm-connection-editor";
+          on-click = "nm-connection-editor";  # Better network GUI
         };
       
         "custom/bluetooth" = {
@@ -151,7 +151,6 @@
       #custom-weather,
       #mpd,
       #uptime,
-      #custom-countdown,
       #pulseaudio {
           padding: 0 10px;
           border-radius: 15px;
@@ -163,6 +162,17 @@
           font-weight: 300;
           border: none;
           box-shadow: none;
+      }
+
+      /* --- COUNTDOWN: NO BACKGROUND, JUST TEXT --- */
+      #custom-countdown {
+          background: transparent;
+          color: #1f2937;
+          padding: 0 10px;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          margin-right: 10px;
+          border-radius: 0;
       }
 
       /* --- INVISIBLE PILLS FOR CONNECTIVITY ICONS --- */
@@ -243,20 +253,19 @@
           background-color: #e5e7eb; 
           color: #1f2937; 
       }
-      
-      #custom-countdown { 
-          background-color: #d1d5db; 
-          color: #1f2937; 
-      }
 
+      /* --- CLOCK: PROPER PILL SHAPE --- */
       #clock {
           background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
           background-size: 200% 200%;
           animation: gradient 10s ease infinite;
           margin-right: 25px;
+          margin-top: 10px;
+          margin-bottom: 10px;
           color: #111827;
           font-size: 14px;
-          padding: 5px 21px 5px 20px;
+          padding: 5px 20px;
+          border-radius: 15px;  /* Added proper pill border-radius */
       }
 
       #tray { 
