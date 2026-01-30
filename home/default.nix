@@ -15,32 +15,12 @@
 
   programs.home-manager.enable = true;
 
-  # Zen browser with extensions
-  programs.zen-browser = {
-    enable = true;
-    profiles.default = {
-      id = 0;
-      isDefault = true;
-      
-      # Add Vimium C and uBlock Origin
-      extensions = with firefox-addons.packages.${pkgs.system}; [
-        vimium-c
-        ublock-origin
-      ];
+  # Install Zen browser package
+  home.packages = [
+    zen-browser.packages.${pkgs.system}.default
+  ];
 
-      # Zen browser policies
-      settings = {
-        "privacy.donottrackheader.enabled" = true;
-        "privacy.trackingprotection.enabled" = true;
-        "privacy.trackingprotection.socialtracking.enabled" = true;
-        "browser.newtabpage.enabled" = false;
-        "browser.startup.page" = 3;
-        "general.smoothScroll" = true;
-      };
-    };
-  };
-
-  # Firefox configuration (keeping as backup browser)
+  # Firefox configuration with extensions (Zen uses Firefox extension system)
   programs.firefox = {
     enable = true;
 
@@ -64,7 +44,7 @@
       name = "default";
       isDefault = true;
 
-      # Declarative extensions
+      # Declarative extensions for Firefox
       extensions = with firefox-addons.packages.${pkgs.system}; [
         leechblock-ng
         vimium-c
