@@ -18,14 +18,14 @@
     # Utilities
     fd
     bat
-    micro
     eza  # exa has been renamed to eza
     tree
+    micro
 
     # Browser (from flake input)
     zen-browser.packages.${pkgs.system}.default
 
     # Fonts
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    (nerd-fonts.jetbrains-mono)  # Fixed: nerdfonts → nerd-fonts
   ];
 }
