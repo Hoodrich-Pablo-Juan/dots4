@@ -15,12 +15,32 @@
 
   programs.home-manager.enable = true;
 
-  # Zen browser package (home manager module from flake input)
-  home.packages = [
-    zen-browser.packages.${pkgs.system}.default
-  ];
+  # Zen browser with extensions
+  programs.zen-browser = {
+    enable = true;
+    profiles.default = {
+      id = 0;
+      isDefault = true;
+      
+      # Add Vimium C and uBlock Origin
+      extensions = with firefox-addons.packages.${pkgs.system}; [
+        vimium-c
+        ublock-origin
+      ];
 
-  # Firefox configuration with addons
+      # Zen browser policies
+      settings = {
+        "privacy.donottrackheader.enabled" = true;
+        "privacy.trackingprotection.enabled" = true;
+        "privacy.trackingprotection.socialtracking.enabled" = true;
+        "browser.newtabpage.enabled" = false;
+        "browser.startup.page" = 3;
+        "general.smoothScroll" = true;
+      };
+    };
+  };
+
+  # Firefox configuration (keeping as backup browser)
   programs.firefox = {
     enable = true;
 
@@ -95,7 +115,7 @@
       
       window_padding_width = 16;
       
-      # E-ink theme colors (matching ghostty config)
+      # E-ink theme colors
       foreground = "#333333";
       background = "#CCCCCC";
       selection_foreground = "#CCCCCC";
