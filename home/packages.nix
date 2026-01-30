@@ -1,28 +1,31 @@
-{ pkgs, zen-browser, ... }:
+{ config, pkgs, zen-browser, ... }:
 
-[
-  # Terminal emulators
-  pkgs.kitty
-  pkgs.alacritty
+{
+  home.packages = with pkgs; [
+    # Terminal emulators
+    kitty
+    alacritty
 
-  # Editors / tools
-  pkgs.vim
-  pkgs.neovim
-  pkgs.git
-  pkgs.curl
-  pkgs.wget
-  pkgs.htop
-  pkgs.ripgrep
+    # Editors / tools
+    vim
+    neovim
+    git
+    curl
+    wget
+    htop
+    ripgrep
 
-  # Utilities
-  pkgs.fd
-  pkgs.bat
-  pkgs.exa
-  pkgs.tree
+    # Utilities
+    fd
+    bat
+    micro
+    eza  # exa has been renamed to eza
+    tree
 
-  # Browser (from flake input)
-  zen-browser
+    # Browser (from flake input)
+    zen-browser.packages.${pkgs.system}.default
 
-  # Fonts
-  pkgs.nerd-fonts-complete
-]
+    # Fonts
+    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+  ];
+}
