@@ -18,14 +18,20 @@
     # Utilities
     fd
     bat
-    eza  # exa has been renamed to eza
+    eza
     tree
-    micro
 
     # Browser (from flake input)
     zen-browser.packages.${pkgs.system}.default
 
     # Fonts
-    (nerd-fonts.jetbrains-mono)  # Fixed: nerdfonts → nerd-fonts
+    (nerd-fonts.jetbrains-mono)
+    
+    # Claude Desktop
+    claude-desktop
+    
+    # MCP tooling for Claude
+    nodejs_22  # Claude MCP requires Node.js
+    uv         # Python package manager for MCP servers
   ];
 }
