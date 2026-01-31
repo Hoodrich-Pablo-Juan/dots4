@@ -1,44 +1,34 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  imports = [ ./hardware-configuration.nix ];
 
   # ============================================
-  # BOOT CONFIGURATION
+  # BOOTLOADER
   # ============================================
-  boot = {
-    loader.systemd-boot.enable = true;
-    loader.efi.canTouchEfiVariables = true;
-
-    # NVIDIA kernel parameters
-    kernelParams = [ 
-      "nvidia-drm.modeset=1"
-      "nvidia-drm.fbdev=1"
-    ];
-
-    # Kernel modules for Waydroid
-    kernelModules = [ "binder_linux" "ashmem_linux" ];
-
-    # Blacklist nouveau to prevent conflicts
-    blacklistedKernelModules = [ "nouveau" ];
-
-    # Load NVIDIA modules early
-    initrd.kernelModules = [ "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
   };
 
   # ============================================
-  # EXPERIMENTAL FEATURES
+  # KERNEL
   # ============================================
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # Enable auto-optimization and garbage collection
-  nix.settings.auto-optimise-store = true;
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
+  # Android emulation support
+  boot.kernelModules = [ "binder_linux" "ashmem_linux" ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    v4l2loopback
+  ];
+
+  # ============================================
+  # SWAP
+  # ============================================
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
   };
 
   # ============================================
@@ -52,6 +42,23 @@
     };
     # Disable iwd to prevent conflicts
     wireless.iwd.enable = false;
+    
+    # Firewall configuration
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 22 ];  # SSH
+    };
+  };
+
+  # ============================================
+  # SSH SERVER
+  # ============================================
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = true;  # Allow password login locally
+      PermitRootLogin = "no";         # Don't allow root login for security
+    };
   };
 
   # ============================================
@@ -211,6 +218,8 @@
       "input"
     ];
     shell = pkgs.bash;
+    # Set initial password for SSH (change with `passwd` command after first login)
+    initialPassword = "changeme";
   };
 
   # ============================================
@@ -284,6 +293,9 @@
     # GTK themes for light mode
     adwaita-icon-theme
     gnome-themes-extra
+    
+    # GNOME Control Center for network settings
+    gnome-control-center
 
     # Fonts
     jetbrains-mono
@@ -322,6 +334,9 @@
 
     # Waydroid (Android emulation)
     waydroid
+    
+    # SSH
+    openssh
   ];
 
   # ============================================
