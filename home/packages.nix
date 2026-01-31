@@ -21,8 +21,8 @@
     eza
     tree
 
-    # Browser (from flake input)
-    zen-browser.packages.${pkgs.system}.default
+    # DON'T add zen-browser here - it's already added by the home manager module!
+    # zen-browser.packages.${pkgs.system}.default  <-- REMOVE THIS LINE
 
     # Fonts
     (nerd-fonts.jetbrains-mono)
