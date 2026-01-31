@@ -18,9 +18,14 @@
       url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, zen-browser, firefox-addons, ... }:
+  outputs = { self, nixpkgs, home-manager, zen-browser, firefox-addons, claude-desktop, ... }:
     let
       system = "x86_64-linux";
     in
@@ -30,7 +35,7 @@
           inherit system;
 
           specialArgs = { 
-            inherit zen-browser firefox-addons; 
+            inherit zen-browser firefox-addons claude-desktop; 
           };
 
           modules = [
@@ -45,13 +50,13 @@
 
               # Pass the inputs to home-manager
               home-manager.extraSpecialArgs = { 
-                inherit zen-browser firefox-addons; 
+                inherit zen-browser firefox-addons claude-desktop; 
               };
 
               # Import home configuration with zen module
               home-manager.users.bryllm = {
                 imports = [
-                  zen-browser.homeModules.default  # Try homeModules instead
+                  zen-browser.homeModules.twilight
                   ./home/default.nix
                 ];
               };
