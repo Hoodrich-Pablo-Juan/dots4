@@ -49,7 +49,7 @@
           format-ethernet = "󰈀";
           format-disconnected = "󰖪";
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
-          on-click = "nm-connection-editor";  # Better network GUI
+          on-click = "gnome-control-center wifi";  # GNOME Settings WiFi panel - beautiful GUI!
         };
       
         "custom/bluetooth" = {
@@ -265,7 +265,7 @@
           color: #111827;
           font-size: 14px;
           padding: 5px 20px;
-          border-radius: 15px;  /* Added proper pill border-radius */
+          border-radius: 15px;
       }
 
       #tray { 
