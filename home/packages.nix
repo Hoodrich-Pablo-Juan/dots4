@@ -1,4 +1,4 @@
-{ config, pkgs, zen-browser, ... }:
+{ config, pkgs, zen-browser, claude-desktop, ... }:
 
 {
   home.packages = with pkgs; [
@@ -27,11 +27,11 @@
     # Fonts
     (nerd-fonts.jetbrains-mono)
     
-    # Claude Desktop
-    claude-desktop
+    # Claude Desktop with FHS for MCP support
+    claude-desktop.packages.${pkgs.system}.claude-desktop-with-fhs
     
-    # MCP tooling for Claude
-    nodejs_22  # Claude MCP requires Node.js
-    uv         # Python package manager for MCP servers
+    # MCP tooling
+    nodejs_22  # For npx MCP servers
+    uv         # For uvx Python MCP servers
   ];
 }
