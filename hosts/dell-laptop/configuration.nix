@@ -56,8 +56,8 @@
   services.openssh = {
     enable = true;
     settings = {
-      PasswordAuthentication = true;  # Allow password login locally
-      PermitRootLogin = "no";         # Don't allow root login for security
+      PasswordAuthentication = true;
+      PermitRootLogin = "no";
     };
   };
 
@@ -218,7 +218,6 @@
       "input"
     ];
     shell = pkgs.bash;
-    # Set initial password for SSH (change with `passwd` command after first login)
     initialPassword = "changeme";
   };
 
@@ -356,7 +355,9 @@
   # ============================================
   programs.firefox.enable = true;
   programs.dconf.enable = true;
-  programs.bash.enableCompletion = true;
+  
+  # Fixed: enableCompletion -> completion.enable
+  programs.bash.completion.enable = true;
 
   # ============================================
   # MISC
