@@ -19,6 +19,20 @@
   programs.zen-browser = {
     enable = true;
     
+    # Policies at top level, not in profiles
+    policies = {
+      DisableTelemetry = true;
+      DisableFirefoxStudies = true;
+      DisablePocket = true;
+      DontCheckDefaultBrowser = true;
+      EnableTrackingProtection = {
+        Value = true;
+        Locked = true;
+        Cryptomining = true;
+        Fingerprinting = true;
+      };
+    };
+    
     profiles.default = {
       id = 0;
       isDefault = true;
@@ -37,20 +51,6 @@
         "browser.newtabpage.enabled" = false;
         "browser.startup.page" = 3;
         "general.smoothScroll" = true;
-      };
-
-      # Policies
-      policies = {
-        DisableTelemetry = true;
-        DisableFirefoxStudies = true;
-        DisablePocket = true;
-        DontCheckDefaultBrowser = true;
-        EnableTrackingProtection = {
-          Value = true;
-          Locked = true;
-          Cryptomining = true;
-          Fingerprinting = true;
-        };
       };
     };
   };
@@ -79,7 +79,6 @@
       name = "default";
       isDefault = true;
 
-      # Fixed: extensions -> extensions.packages
       extensions.packages = with firefox-addons.packages.${pkgs.system}; [
         leechblock-ng
         vimium-c
