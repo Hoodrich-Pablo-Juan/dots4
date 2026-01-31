@@ -48,8 +48,13 @@
                 inherit zen-browser firefox-addons; 
               };
 
-              # Import home configuration
-              home-manager.users.bryllm = ./home/default.nix;
+              # Import home configuration with zen module
+              home-manager.users.bryllm = {
+                imports = [
+                  zen-browser.homeModules.default  # Try homeModules instead
+                  ./home/default.nix
+                ];
+              };
             }
           ];
         };
