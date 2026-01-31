@@ -15,12 +15,47 @@
 
   programs.home-manager.enable = true;
 
-  # Install Zen browser package
-  home.packages = [
-    zen-browser.packages.${pkgs.system}.default
-  ];
+  # Zen browser with declarative extensions
+  programs.zen-browser = {
+    enable = true;
+    
+    profiles.default = {
+      id = 0;
+      isDefault = true;
+      
+      # Extensions - vimium-c and ublock-origin
+      extensions.packages = with firefox-addons.packages.${pkgs.system}; [
+        vimium-c
+        ublock-origin
+      ];
 
-  # Firefox configuration with extensions (Zen uses Firefox extension system)
+      # Zen browser settings
+      settings = {
+        "privacy.donottrackheader.enabled" = true;
+        "privacy.trackingprotection.enabled" = true;
+        "privacy.trackingprotection.socialtracking.enabled" = true;
+        "browser.newtabpage.enabled" = false;
+        "browser.startup.page" = 3;
+        "general.smoothScroll" = true;
+      };
+
+      # Policies
+      policies = {
+        DisableTelemetry = true;
+        DisableFirefoxStudies = true;
+        DisablePocket = true;
+        DontCheckDefaultBrowser = true;
+        EnableTrackingProtection = {
+          Value = true;
+          Locked = true;
+          Cryptomining = true;
+          Fingerprinting = true;
+        };
+      };
+    };
+  };
+
+  # Firefox as backup browser
   programs.firefox = {
     enable = true;
 
@@ -44,8 +79,8 @@
       name = "default";
       isDefault = true;
 
-      # Declarative extensions for Firefox
-      extensions = with firefox-addons.packages.${pkgs.system}; [
+      # Fixed: extensions -> extensions.packages
+      extensions.packages = with firefox-addons.packages.${pkgs.system}; [
         leechblock-ng
         vimium-c
         stylus
@@ -55,9 +90,7 @@
         "privacy.donottrackheader.enabled" = true;
         "privacy.trackingprotection.enabled" = true;
         "privacy.trackingprotection.socialtracking.enabled" = true;
-
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-
         "browser.newtabpage.activity-stream.feeds.telemetry" = false;
         "browser.ping-centre.telemetry" = false;
         "browser.tabs.crashReporting.sendReport" = false;
@@ -66,7 +99,6 @@
         "toolkit.telemetry.enabled" = false;
         "toolkit.telemetry.unified" = false;
         "toolkit.telemetry.archive.enabled" = false;
-
         "browser.newtabpage.enabled" = false;
         "browser.startup.page" = 3;
         "general.smoothScroll" = true;
